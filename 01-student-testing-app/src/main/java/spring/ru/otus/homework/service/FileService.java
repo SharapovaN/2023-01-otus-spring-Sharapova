@@ -19,7 +19,7 @@ public class FileService {
         Scanner scanner = new Scanner(new File(url));
         List<String> strings = new ArrayList<>();
 
-        scanner.useDelimiter("\r\n");
+        scanner.useDelimiter("\n");
 
         while (scanner.hasNext()) {
             strings.add(scanner.next());
