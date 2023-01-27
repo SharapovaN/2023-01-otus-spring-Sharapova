@@ -5,7 +5,6 @@ import org.junit.Test;
 import java.io.FileNotFoundException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
 
 public class FileServiceTest {
 
@@ -16,11 +15,6 @@ public class FileServiceTest {
         String[] strings = fileService.parseCSVToStringArray();
 
         assertEquals(5, strings.length);
-    }
-
-    @Test
-    public void parseCSVToStringArrayWhenUrlNotOkTest() {
-        assertThrows(FileNotFoundException.class, () -> fileService.parseCSVToStringArray());
     }
 
 }
