@@ -1,4 +1,4 @@
-package ru.otus.homework.service;
+package spring.ru.otus.homework.service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,7 +8,13 @@ import java.util.Scanner;
 
 public class FileService {
 
-    public String[] parseCSVToStringArray(String url) throws FileNotFoundException {
+    private String url;
+
+    public FileService(String url) {
+        this.url = url;
+    }
+
+    public String[] parseCSVToStringArray() throws FileNotFoundException {
 
         Scanner scanner = new Scanner(new File(url));
         List<String> strings = new ArrayList<>();

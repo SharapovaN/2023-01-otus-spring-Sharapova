@@ -1,4 +1,4 @@
-package ru.otus.homework.exception;
+package spring.ru.otus.homework.exception;
 
 public class WrongDataException extends RuntimeException {
 

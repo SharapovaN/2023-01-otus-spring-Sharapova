@@ -1,14 +1,14 @@
-package ru.otus.homework.service;
+package spring.ru.otus.homework.service;
 
-import ru.otus.homework.exception.WrongDataException;
-import ru.otus.homework.model.Question;
+import spring.ru.otus.homework.exception.WrongDataException;
+import spring.ru.otus.homework.model.QuestionDto;
 
 public class QuestionService {
 
-    public Question createQuestion(String questionString) {
+    public QuestionDto createQuestion(String questionString) {
 
         String[] questionData = questionString.split(",");
-        Question question = new Question();
+        QuestionDto question = new QuestionDto();
 
         if (questionData.length == 5) {
             question.setQuestion(questionData[0]);
@@ -24,7 +24,7 @@ public class QuestionService {
 
     }
 
-    public void printQuestion(Question question) {
+    public void printQuestion(QuestionDto question) {
 
         System.out.println("Question : " + question.getQuestion());
         System.out.println("Answer options : " + question.getAnswerA());

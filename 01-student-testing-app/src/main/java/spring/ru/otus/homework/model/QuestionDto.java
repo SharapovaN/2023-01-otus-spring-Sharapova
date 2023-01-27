@@ -1,6 +1,6 @@
-package ru.otus.homework.model;
+package spring.ru.otus.homework.model;
 
-public class Question {
+public class QuestionDto {
 
     private String question;
     private String answerA;
