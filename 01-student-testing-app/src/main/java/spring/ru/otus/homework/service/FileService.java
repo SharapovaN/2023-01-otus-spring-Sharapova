@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class FileService {
 
-    private String url;
+    private final String url;
 
     public FileService(String url) {
         this.url = url;
