@@ -4,7 +4,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="questionDao" class="spring.ru.otus.homework.model.QuestionDto"/>
     <bean id="fileService" class="spring.ru.otus.homework.service.FileService">
         <constructor-arg index="0" name="url" value="01-student-testing-app/src/main/resources/TestQuestions.csv"/>
     </bean>
