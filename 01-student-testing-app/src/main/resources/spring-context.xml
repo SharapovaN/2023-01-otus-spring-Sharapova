@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="fileService" class="spring.ru.otus.homework.service.FileService">
+        <constructor-arg index="0" name="url" value="01-student-testing-app/src/main/resources/TestQuestions.csv"/>
+    </bean>
+    <bean id="questionService" class="spring.ru.otus.homework.service.QuestionService"/>
+
+</beans>
