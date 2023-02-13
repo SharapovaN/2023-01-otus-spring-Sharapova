@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 @ExtendWith(MockitoExtension.class)
 public class FileServiceTest {
 
-    private final FileService fileService = new CsvFileServiceImpl("01-student-testing-app/src/test/resources/TestQuestionsForTest.csv");
+    private final FileService fileService = new CsvFileServiceImpl("resources/TestQuestionsForTest.csv");
 
     @Test
     public void parseCSVToStringArrayWhenUrlOkTest() throws FileNotFoundException {
