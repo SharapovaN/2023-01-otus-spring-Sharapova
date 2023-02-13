@@ -22,7 +22,7 @@ public class QuestionServiceTest {
     @Mock
     private IOService ioService;
 
-    private FileService fileService = new CsvFileServiceImpl("01-student-testing-app/src/test/resources/TestQuestionsForTest.csv");
+    private FileService fileService = new CsvFileServiceImpl("resources/TestQuestionsForTest.csv");
 
     private QuestionServiceImpl questionService = new QuestionServiceImpl(ioService, fileService);
 
@@ -60,7 +60,7 @@ public class QuestionServiceTest {
 
     @Test
     public void createQuestionListIfDataIsEmpty() {
-        fileService = new CsvFileServiceImpl("01-student-testing-app/src/test/resources/EmptyTestQuestions.csv");
+        fileService = new CsvFileServiceImpl("resources/EmptyTestQuestions.csv");
         questionService = new QuestionServiceImpl(ioService, fileService);
         Exception exception = assertThrows(WrongDataException.class,
                 () -> questionService.getQuestions());
@@ -73,7 +73,7 @@ public class QuestionServiceTest {
 
     @Test
     public void createQuestionListIfSomeStringsIsEmpty() {
-        fileService = new CsvFileServiceImpl("01-student-testing-app/src/test/resources/EmptyStringTestQuestions.csv");
+        fileService = new CsvFileServiceImpl("resources/EmptyStringTestQuestions.csv");
         questionService = new QuestionServiceImpl(ioService, fileService);
         Exception exception = assertThrows(WrongDataException.class,
                 () -> questionService.getQuestions());
@@ -86,7 +86,7 @@ public class QuestionServiceTest {
 
     @Test
     public void createQuestionIfDataIsNotOkTest() {
-        fileService = new CsvFileServiceImpl("01-student-testing-app/src/test/resources/WrongDataForCreateQuestionTest.csv");
+        fileService = new CsvFileServiceImpl("resources/WrongDataForCreateQuestionTest.csv");
         questionService = new QuestionServiceImpl(ioService, fileService);
 
         Exception exception = assertThrows(WrongDataException.class,
