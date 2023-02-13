@@ -27,17 +27,16 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
     @Override
     public void run() {
         while (applicationStopService.isApplicationRunning()) {
-
-            ioService.outputString(StringConstants.WELCOME_PHRASE);
-            StudentDto student = studentService.createStudent();
-            ioService.outputString(StringConstants.TEST_START_PHRASE);
             List<QuestionDto> questions = null;
-
             try {
                 questions = questionService.getQuestions();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
+
+            ioService.outputString(StringConstants.WELCOME_PHRASE);
+            StudentDto student = studentService.createStudent();
+            ioService.outputString(StringConstants.TEST_START_PHRASE);
 
             for (QuestionDto question : questions) {
                 questionService.printQuestion(question);
