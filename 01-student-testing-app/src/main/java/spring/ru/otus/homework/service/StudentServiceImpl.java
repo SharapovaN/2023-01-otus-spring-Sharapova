@@ -1,17 +1,21 @@
 package spring.ru.otus.homework.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import spring.ru.otus.homework.model.StudentDto;
 import spring.ru.otus.homework.utils.StringConstants;
 
+@Service
 public class StudentServiceImpl implements StudentService {
 
     private final IOService ioService;
-    @Value("${number.right.answers.for.positive.result}")
-    private int necessaryRightAnswersNumber;
 
-    public StudentServiceImpl(IOService ioService) {
+    private final int necessaryRightAnswersNumber;
+
+    public StudentServiceImpl(IOService ioService,
+                              @Value("${number.right.answers.for.positive.result}") int necessaryRightAnswersNumber) {
         this.ioService = ioService;
+        this.necessaryRightAnswersNumber = necessaryRightAnswersNumber;
     }
 
     @Override

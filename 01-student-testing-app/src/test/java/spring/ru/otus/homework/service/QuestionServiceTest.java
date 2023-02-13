@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import spring.ru.otus.homework.exception.WrongDataException;
 import spring.ru.otus.homework.model.QuestionDto;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -21,7 +22,10 @@ public class QuestionServiceTest {
     @Mock
     private IOService ioService;
 
-    private final QuestionServiceImpl questionService = new QuestionServiceImpl(ioService);
+    @Mock
+    private FileService fileService;
+
+    private final QuestionServiceImpl questionService = new QuestionServiceImpl(ioService, fileService);
 
     @Test
     public void createQuestionIfDataIsOkTest() {
@@ -59,7 +63,7 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void createQuestionListIfDataIsOk() {
+    public void createQuestionListIfDataIsOk() throws FileNotFoundException {
         String[] strings = new String[] {"Question1,1AnswerA,1AnswerB,1AnswerC,1AnswerD,1,",
                 "Question2,2AnswerA,2AnswerB,2AnswerC,2AnswerD,1,"};
         questionService.createQuestionsList(strings);

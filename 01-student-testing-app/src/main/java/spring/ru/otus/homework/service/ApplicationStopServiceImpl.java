@@ -1,7 +1,10 @@
 package spring.ru.otus.homework.service;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import spring.ru.otus.homework.utils.StringConstants;
 
+@Service
 public class ApplicationStopServiceImpl implements ApplicationStopService {
 
     private final IOService ioService;
@@ -9,7 +12,8 @@ public class ApplicationStopServiceImpl implements ApplicationStopService {
     private boolean executionFlag;
 
     public ApplicationStopServiceImpl(IOService ioService,
-                                      ApplicationStopServiceSettingsProvider settingsProvider, boolean executionFlag) {
+                                      ApplicationStopServiceSettingsProvider settingsProvider,
+                                      @Value("${application.execution.flag}") boolean executionFlag) {
         this.ioService = ioService;
         this.settingsProvider = settingsProvider;
         this.executionFlag = executionFlag;
