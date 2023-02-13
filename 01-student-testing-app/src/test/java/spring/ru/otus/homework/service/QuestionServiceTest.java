@@ -22,14 +22,13 @@ public class QuestionServiceTest {
     @Mock
     private IOService ioService;
 
-    @Mock
-    private FileService fileService;
+    private FileService fileService = new CsvFileServiceImpl("01-student-testing-app/src/test/resources/TestQuestionsForTest.csv");
 
-    private final QuestionServiceImpl questionService = new QuestionServiceImpl(ioService, fileService);
+    private QuestionServiceImpl questionService = new QuestionServiceImpl(ioService, fileService);
 
     @Test
-    public void createQuestionIfDataIsOkTest() {
-        QuestionDto question = questionService.createQuestion("Question1,1AnswerA,1AnswerB,1AnswerC,1AnswerD,1,");
+    public void createQuestionIfDataIsOkTest() throws FileNotFoundException {
+        QuestionDto question = questionService.getQuestions().get(0);
 
         Assert.assertEquals("Question1", question.getQuestion());
         Assert.assertEquals("1AnswerA", question.getAnswers().get(0));
@@ -40,44 +39,31 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void createQuestionIfDataIsNotOkTest() {
-        Exception exception = assertThrows(WrongDataException.class,
-                () -> questionService.createQuestion("Question1,1AnswerA"));
-
-        String expectedMessage = "Impossible to create question due to wrong input data";
-        String actualMessage = exception.getMessage();
-
-        assertTrue(actualMessage.contains(expectedMessage));
+    public void checkAnswerIfAnswerIsOkTest() throws FileNotFoundException {
+        List<QuestionDto> questions = questionService.getQuestions();
+        assertTrue(questionService.checkAnswer(1, questions.get(0)));
     }
 
     @Test
-    public void checkAnswerIfAnswerIsOkTest() {
-        QuestionDto question = questionService.createQuestion("Question1,1AnswerA,1AnswerB,1AnswerC,1AnswerD,1,");
-        assertTrue(questionService.checkAnswer(1, question));
-    }
-
-    @Test
-    public void checkAnswerIfAnswerIsNotOkTest() {
-        QuestionDto question = questionService.createQuestion("Question1,1AnswerA,1AnswerB,1AnswerC,1AnswerD,1,");
-        assertFalse(questionService.checkAnswer(2, question));
+    public void checkAnswerIfAnswerIsNotOkTest() throws FileNotFoundException {
+        List<QuestionDto> questions = questionService.getQuestions();
+        assertFalse(questionService.checkAnswer(2, questions.get(0)));
     }
 
     @Test
     public void createQuestionListIfDataIsOk() throws FileNotFoundException {
-        String[] strings = new String[] {"Question1,1AnswerA,1AnswerB,1AnswerC,1AnswerD,1,",
-                "Question2,2AnswerA,2AnswerB,2AnswerC,2AnswerD,1,"};
-        questionService.createQuestionsList(strings);
         List<QuestionDto> questions = questionService.getQuestions();
 
         assertFalse(questions.isEmpty());
-        assertEquals(2, questions.size());
+        assertEquals(5, questions.size());
     }
 
     @Test
     public void createQuestionListIfDataIsEmpty() {
-        String[] strings = new String[0];
+        fileService = new CsvFileServiceImpl("01-student-testing-app/src/test/resources/EmptyTestQuestions.csv");
+        questionService = new QuestionServiceImpl(ioService, fileService);
         Exception exception = assertThrows(WrongDataException.class,
-                () -> questionService.createQuestionsList(strings));
+                () -> questionService.getQuestions());
 
         String expectedMessage = "Impossible to create question list due to wrong input array";
         String actualMessage = exception.getMessage();
@@ -87,10 +73,24 @@ public class QuestionServiceTest {
 
     @Test
     public void createQuestionListIfSomeStringsIsEmpty() {
-        String[] strings = new String[] {"Question1,1AnswerA,1AnswerB,1AnswerC,1AnswerD,1,", "",
-                "Question2,2AnswerA,2AnswerB,2AnswerC,2AnswerD,1,"};
+        fileService = new CsvFileServiceImpl("01-student-testing-app/src/test/resources/EmptyStringTestQuestions.csv");
+        questionService = new QuestionServiceImpl(ioService, fileService);
         Exception exception = assertThrows(WrongDataException.class,
-                () -> questionService.createQuestionsList(strings));
+                () -> questionService.getQuestions());
+
+        String expectedMessage = "Impossible to create question due to wrong input data";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    public void createQuestionIfDataIsNotOkTest() {
+        fileService = new CsvFileServiceImpl("01-student-testing-app/src/test/resources/WrongDataForCreateQuestionTest.csv");
+        questionService = new QuestionServiceImpl(ioService, fileService);
+
+        Exception exception = assertThrows(WrongDataException.class,
+                () -> questionService.getQuestions());
 
         String expectedMessage = "Impossible to create question due to wrong input data";
         String actualMessage = exception.getMessage();

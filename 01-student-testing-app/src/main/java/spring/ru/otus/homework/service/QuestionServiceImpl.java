@@ -21,18 +21,6 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public void createQuestionsList(String[] questionData) {
-        questions = new ArrayList<>();
-        if (questionData.length > 0) {
-            for (String questionString : questionData) {
-                questions.add(createQuestion(questionString));
-            }
-        } else {
-            throw new WrongDataException("Impossible to create question list due to wrong input array");
-        }
-    }
-
-    @Override
     public void printQuestion(QuestionDto question) {
         List<String> answers = question.getAnswers();
         int k;
@@ -58,8 +46,7 @@ public class QuestionServiceImpl implements QuestionService {
         return questions;
     }
 
-    @Override
-    public QuestionDto createQuestion(String questionString) {
+    private QuestionDto createQuestion(String questionString) {
 
         String questionDataString = questionString.replaceAll("\r", "");
         String[] questionData = questionDataString.split(",");
@@ -81,6 +68,17 @@ public class QuestionServiceImpl implements QuestionService {
             answers.add(questionData[i]);
         }
         questionDto.setAnswers(answers);
+    }
+
+    private void createQuestionsList(String[] questionData) {
+        questions = new ArrayList<>();
+        if (questionData.length > 0) {
+            for (String questionString : questionData) {
+                questions.add(createQuestion(questionString));
+            }
+        } else {
+            throw new WrongDataException("Impossible to create question list due to wrong input array");
+        }
     }
 
 }

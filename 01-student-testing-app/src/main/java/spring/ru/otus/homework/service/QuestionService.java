@@ -6,13 +6,9 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 public interface QuestionService {
-    void createQuestionsList(String[] questionData);
-
     void printQuestion(QuestionDto question);
 
     boolean checkAnswer(int answerNumber, QuestionDto question);
 
     List<QuestionDto> getQuestions() throws FileNotFoundException;
-
-    QuestionDto createQuestion(String questionString);
 }
