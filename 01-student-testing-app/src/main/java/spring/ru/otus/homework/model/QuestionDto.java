@@ -1,12 +1,12 @@
 package spring.ru.otus.homework.model;
 
+import java.util.List;
+
 public class QuestionDto {
 
     private String question;
-    private String answerA;
-    private String answerB;
-    private String answerC;
-    private String answerD;
+    private List<String> answers;
+    private int rightAnswerIndex;
 
     public String getQuestion() {
         return question;
@@ -16,35 +16,19 @@ public class QuestionDto {
         this.question = question;
     }
 
-    public String getAnswerA() {
-        return answerA;
+    public List<String> getAnswers() {
+        return answers;
     }
 
-    public void setAnswerA(String answerA) {
-        this.answerA = answerA;
+    public void setAnswers(List<String> answers) {
+        this.answers = answers;
     }
 
-    public String getAnswerB() {
-        return answerB;
+    public int getRightAnswerIndex() {
+        return rightAnswerIndex;
     }
 
-    public void setAnswerB(String answerB) {
-        this.answerB = answerB;
-    }
-
-    public String getAnswerC() {
-        return answerC;
-    }
-
-    public void setAnswerC(String answerC) {
-        this.answerC = answerC;
-    }
-
-    public String getAnswerD() {
-        return answerD;
-    }
-
-    public void setAnswerD(String answerD) {
-        this.answerD = answerD;
+    public void setRightAnswerIndex(int rightAnswerIndex) {
+        this.rightAnswerIndex = rightAnswerIndex;
     }
 }
