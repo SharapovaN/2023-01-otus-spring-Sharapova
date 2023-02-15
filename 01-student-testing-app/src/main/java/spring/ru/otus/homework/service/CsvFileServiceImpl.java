@@ -15,7 +15,7 @@ public class CsvFileServiceImpl implements FileService {
     private String url;
 
     public void setUrl(String url) {
-            this.url = url;
+        this.url = url;
     }
 
     public String[] parseFileToStringArray() throws FileNotFoundException {
