@@ -25,11 +25,10 @@ public class QuestionServiceImpl implements QuestionService {
         List<String> answers = question.getAnswers();
         int k;
 
-        ioService.outputString("Question : " + question.getQuestion());
-        ioService.outputString("Answer options : ");
+        ioService.outputString(question.getQuestion());
         for (int i = 0; i < answers.size(); i++) {
             k = i + 1;
-            ioService.outputString("                 " + k + ") " + answers.get(i));
+            ioService.outputString(" " + k + ") " + answers.get(i));
         }
     }
 

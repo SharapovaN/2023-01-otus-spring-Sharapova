@@ -1,0 +1,3 @@
+application:
+  locale: en
+  number.right.answers.for.positive.result: 4
