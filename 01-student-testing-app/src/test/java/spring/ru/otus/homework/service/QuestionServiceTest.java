@@ -2,9 +2,8 @@ package spring.ru.otus.homework.service;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 import spring.ru.otus.homework.exception.WrongDataException;
 import spring.ru.otus.homework.model.QuestionDto;
 
@@ -16,18 +15,19 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest()
 public class QuestionServiceTest {
 
     @Mock
     private IOService ioService;
 
-    private FileService fileService = new CsvFileServiceImpl("resources/TestQuestionsForTest.csv");
+    private FileService fileService = new CsvFileServiceImpl();
 
     private QuestionServiceImpl questionService = new QuestionServiceImpl(ioService, fileService);
 
     @Test
     public void createQuestionIfDataIsOkTest() throws FileNotFoundException {
+        fileService.setUrl("resources/TestQuestionsForTest.csv");
         QuestionDto question = questionService.getQuestions().get(0);
 
         Assert.assertEquals("Question1", question.getQuestion());
@@ -40,18 +40,21 @@ public class QuestionServiceTest {
 
     @Test
     public void checkAnswerIfAnswerIsOkTest() throws FileNotFoundException {
+        fileService.setUrl("resources/TestQuestionsForTest.csv");
         List<QuestionDto> questions = questionService.getQuestions();
         assertTrue(questionService.checkAnswer(1, questions.get(0)));
     }
 
     @Test
     public void checkAnswerIfAnswerIsNotOkTest() throws FileNotFoundException {
+        fileService.setUrl("resources/TestQuestionsForTest.csv");
         List<QuestionDto> questions = questionService.getQuestions();
         assertFalse(questionService.checkAnswer(2, questions.get(0)));
     }
 
     @Test
     public void createQuestionListIfDataIsOk() throws FileNotFoundException {
+        fileService.setUrl("resources/TestQuestionsForTest.csv");
         List<QuestionDto> questions = questionService.getQuestions();
 
         assertFalse(questions.isEmpty());
@@ -60,8 +63,7 @@ public class QuestionServiceTest {
 
     @Test
     public void createQuestionListIfDataIsEmpty() {
-        fileService = new CsvFileServiceImpl("resources/EmptyTestQuestions.csv");
-        questionService = new QuestionServiceImpl(ioService, fileService);
+        fileService.setUrl("resources/EmptyTestQuestions.csv");
         Exception exception = assertThrows(WrongDataException.class,
                 () -> questionService.getQuestions());
 
@@ -73,8 +75,7 @@ public class QuestionServiceTest {
 
     @Test
     public void createQuestionListIfSomeStringsIsEmpty() {
-        fileService = new CsvFileServiceImpl("resources/EmptyStringTestQuestions.csv");
-        questionService = new QuestionServiceImpl(ioService, fileService);
+        fileService.setUrl("resources/EmptyStringTestQuestions.csv");
         Exception exception = assertThrows(WrongDataException.class,
                 () -> questionService.getQuestions());
 
@@ -86,9 +87,7 @@ public class QuestionServiceTest {
 
     @Test
     public void createQuestionIfDataIsNotOkTest() {
-        fileService = new CsvFileServiceImpl("resources/WrongDataForCreateQuestionTest.csv");
-        questionService = new QuestionServiceImpl(ioService, fileService);
-
+        fileService.setUrl("resources/WrongDataForCreateQuestionTest.csv");
         Exception exception = assertThrows(WrongDataException.class,
                 () -> questionService.getQuestions());
 

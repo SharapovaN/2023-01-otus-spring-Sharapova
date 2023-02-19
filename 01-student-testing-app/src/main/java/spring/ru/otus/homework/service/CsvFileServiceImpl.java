@@ -1,6 +1,5 @@
 package spring.ru.otus.homework.service;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -13,9 +12,9 @@ import java.util.Scanner;
 @Service
 public class CsvFileServiceImpl implements FileService {
 
-    private final String url;
+    private String url;
 
-    public CsvFileServiceImpl(@Value("${csv.question.file.url}") String url) {
+    public void setUrl(String url) {
         this.url = url;
     }
 

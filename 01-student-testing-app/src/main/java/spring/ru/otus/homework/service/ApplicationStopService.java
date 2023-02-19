@@ -6,4 +6,6 @@ public interface ApplicationStopService {
     void stopApplication();
 
     void stopTesting();
+
+    void shutdownContext();
 }
