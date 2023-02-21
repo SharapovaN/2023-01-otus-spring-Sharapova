@@ -1,3 +1,8 @@
+spring:
+  messages:
+    basename: "i18n/appmessages"
+    encoding: "UTF-8"
+
 application:
   locale: en
   number.right.answers.for.positive.result: 4

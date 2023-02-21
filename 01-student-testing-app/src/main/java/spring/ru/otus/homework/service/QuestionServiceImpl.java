@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import spring.ru.otus.homework.exception.WrongDataException;
 import spring.ru.otus.homework.model.QuestionDto;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,12 +11,10 @@ import java.util.List;
 public class QuestionServiceImpl implements QuestionService {
 
     private final IOService ioService;
-    private final FileService fileService;
     private List<QuestionDto> questions;
 
-    public QuestionServiceImpl(IOService ioService, FileService fileService) {
+    public QuestionServiceImpl(IOService ioService) {
         this.ioService = ioService;
-        this.fileService = fileService;
     }
 
     @Override
@@ -38,9 +35,9 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<QuestionDto> getQuestions() throws FileNotFoundException {
+    public List<QuestionDto> getQuestions(String[] questionData) {
         if (questions == null) {
-            createQuestionsList(fileService.parseFileToStringArray());
+            createQuestionsList(questionData);
         }
         return questions;
     }

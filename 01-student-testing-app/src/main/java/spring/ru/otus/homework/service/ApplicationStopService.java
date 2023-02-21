@@ -7,5 +7,4 @@ public interface ApplicationStopService {
 
     void stopTesting();
 
-    void shutdownContext();
 }

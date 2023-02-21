@@ -35,11 +35,10 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
     @Override
     public void run() {
         while (applicationStopService.isApplicationRunning()) {
-            fileService.setUrl(messageSource.getMessage("csv.question.file.url", null, props.getLocale()));
 
             List<QuestionDto> questions = null;
             try {
-                questions = questionService.getQuestions();
+                questions = questionService.getQuestions(fileService.getDataFromFile());
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -59,6 +58,5 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
             ioService.outputString(studentService.getStudentTestingResult(student));
             applicationStopService.stopTesting();
         }
-        applicationStopService.shutdownContext();
     }
 }
