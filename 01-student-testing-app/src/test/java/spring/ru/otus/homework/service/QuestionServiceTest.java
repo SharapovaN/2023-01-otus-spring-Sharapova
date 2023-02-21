@@ -17,7 +17,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
-@SpringBootTest()
+@SpringBootTest(properties = "spring.shell.interactive.enabled=false")
 @RunWith(SpringRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class QuestionServiceTest {
@@ -64,7 +64,7 @@ public class QuestionServiceTest {
     @Test
     public void createQuestionListIfDataIsEmpty() {
         Exception exception = assertThrows(WrongDataException.class,
-                () -> questionService.getQuestions(new String[] {}));
+                () -> questionService.getQuestions(new String[]{}));
 
         String expectedMessage = "Impossible to create question list due to wrong input array";
         String actualMessage = exception.getMessage();

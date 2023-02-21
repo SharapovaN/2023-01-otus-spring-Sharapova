@@ -1,5 +1,6 @@
 package spring.ru.otus.homework.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import spring.ru.otus.homework.exception.WrongDataException;
 import spring.ru.otus.homework.model.QuestionDto;
@@ -8,14 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
 
     private final IOService ioService;
     private List<QuestionDto> questions;
-
-    public QuestionServiceImpl(IOService ioService) {
-        this.ioService = ioService;
-    }
 
     @Override
     public void printQuestion(QuestionDto question) {

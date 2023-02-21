@@ -11,7 +11,7 @@ import java.io.FileNotFoundException;
 
 import static org.junit.Assert.assertEquals;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.shell.interactive.enabled=false")
 @RunWith(SpringRunner.class)
 @TestPropertySource("classpath:application-test.yml")
 public class FileServiceTest {
