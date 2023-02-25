@@ -9,8 +9,8 @@ import spring.ru.otus.homework.model.StudentDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
 @TestPropertySource("classpath:application-test.yml")
+@SpringBootTest(properties = "spring.shell.interactive.enabled=false")
 public class StudentServiceImplTest {
 
     @Autowired

@@ -7,7 +7,7 @@ server:
   port: 8080
 
 application:
-  locale: ru_RU
+  locale: en
   execution.flag: true
   confirm.exit.flag: true
   number.right.answers.for.positive.result: 4

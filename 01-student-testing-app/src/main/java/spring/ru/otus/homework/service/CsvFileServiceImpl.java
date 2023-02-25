@@ -1,6 +1,8 @@
 package spring.ru.otus.homework.service;
 
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import spring.ru.otus.homework.config.AppProps;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,14 +14,14 @@ import java.util.Scanner;
 @Service
 public class CsvFileServiceImpl implements FileService {
 
-    private String url;
+    private final String url;
 
-    public void setUrl(String url) {
-        this.url = url;
+    public CsvFileServiceImpl(MessageSource messageSource, AppProps props) {
+        this.url = messageSource.getMessage("csv.question.file.url", null, props.getLocale());
     }
 
-    public String[] parseFileToStringArray() throws FileNotFoundException {
-
+    @Override
+    public String[] getDataFromFile() throws FileNotFoundException {
         Scanner scanner = new Scanner(new File(url));
         List<String> strings = new ArrayList<>();
 
@@ -31,4 +33,5 @@ public class CsvFileServiceImpl implements FileService {
 
         return strings.toArray(String[]::new);
     }
+
 }

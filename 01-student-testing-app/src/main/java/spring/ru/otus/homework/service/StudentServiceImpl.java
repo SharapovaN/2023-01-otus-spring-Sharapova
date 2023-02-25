@@ -14,7 +14,6 @@ public class StudentServiceImpl implements StudentService {
     private final AppProps props;
     private final int necessaryRightAnswersNumber;
 
-
     public StudentServiceImpl(IOService ioService, MessageSource messageSource, AppProps props,
                               @Value("${application.number.right.answers.for.positive.result}") int necessaryRightAnswersNumber) {
         this.ioService = ioService;
