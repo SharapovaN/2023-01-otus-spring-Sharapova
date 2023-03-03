@@ -6,7 +6,12 @@
 
     <groupId>org.example</groupId>
     <artifactId>SpringHomeworks</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>01-student-testing-app</module>
+        <module>02-library-app</module>
+    </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
