@@ -11,6 +11,9 @@ import ru.otus.spring.homework.model.Book;
 import ru.otus.spring.homework.model.Genre;
 import ru.otus.spring.homework.repository.BookDaoJdbc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,6 +40,19 @@ class BookServiceImplTest {
         String book = bookService.getById(1);
         Assertions.assertFalse(book.isEmpty());
         Assertions.assertTrue(book.contains("not found"));
+    }
+
+    @Test
+    void getAllIfBooksExistsTest() {
+        List<Book> books = new ArrayList<>();
+        books.add(new Book(1, "bookName",
+                new Author(1, "name", "surname"),
+                new Genre(1, "genre")));
+        books.add(new Book(2, "bookName",
+                new Author(1, "name", "surname"),
+                new Genre(1, "genre")));
+        given(bookDaoJdbc.getAll()).willReturn(books);
+        Assertions.assertEquals(2, bookService.getAll().size());
     }
 
     @Test

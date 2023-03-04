@@ -6,6 +6,8 @@ import ru.otus.spring.homework.model.Book;
 import ru.otus.spring.homework.repository.BookDaoJdbc;
 import ru.otus.spring.homework.utils.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @AllArgsConstructor
@@ -16,7 +18,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<String> getAll() {
-        return bookDaoJdbc.getAll().stream().map(Book::toString).toList();
+        List<String> books = bookDaoJdbc.getAll().stream().map(Book::toString).toList();
+        return books.size() != 0 ? books : new ArrayList<>(Collections.singleton(StringUtils.BOOKS_NOT_FOUND_RESPONSE));
     }
 
     @Override
