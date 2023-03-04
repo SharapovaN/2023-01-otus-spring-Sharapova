@@ -20,7 +20,7 @@ public class ApplicationCommand {
     }
 
     @ShellMethod(value = "Get all book command", key = {"ga", "get all"})
-    public List<String> getBook() {
+    public List<String> getAllBooks() {
         return bookService.getAll();
     }
 
