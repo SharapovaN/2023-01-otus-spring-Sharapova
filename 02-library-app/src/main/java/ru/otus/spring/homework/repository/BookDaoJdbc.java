@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
 import ru.otus.spring.homework.model.Book;
-import ru.otus.spring.homework.repository.extractor.BookResultSetExtractor;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -16,14 +16,22 @@ public class BookDaoJdbc implements BookDao {
     private final NamedParameterJdbcOperations namedParameterJdbcOperations;
 
     @Override
-    public Book getById(long id) {
-        Map<String, Object> params = Collections.singletonMap("id", id);
-
+    public List<Book> getAll() {
         return namedParameterJdbcOperations.query("SELECT b.id, b.book_name, a.id author_id, a.author_name, " +
                 "a.author_surname, g.id genre_id, g.genre_name " +
                 "FROM books b JOIN authors a ON a.id = b.author_id " +
+                "JOIN genres g ON g.id = b.genre_id", new BookMapper());
+    }
+
+    @Override
+    public Book getById(long id) {
+        Map<String, Object> params = Collections.singletonMap("id", id);
+
+        return namedParameterJdbcOperations.queryForObject("SELECT b.id, b.book_name, a.id author_id, a.author_name, " +
+                "a.author_surname, g.id genre_id, g.genre_name " +
+                "FROM books b JOIN authors a ON a.id = b.author_id " +
                 "JOIN genres g ON g.id = b.genre_id " +
-                "WHERE b.id = :id", params, new BookResultSetExtractor());
+                "WHERE b.id = :id", params, new BookMapper());
     }
 
     @Override

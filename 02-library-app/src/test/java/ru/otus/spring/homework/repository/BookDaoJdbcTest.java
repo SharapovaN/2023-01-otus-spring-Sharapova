@@ -5,7 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.dao.EmptyResultDataAccessException;
 import ru.otus.spring.homework.model.Book;
+
+import java.util.List;
 
 @JdbcTest
 @Import(BookDaoJdbc.class)
@@ -25,8 +28,16 @@ class BookDaoJdbcTest {
 
     @Test
     void getByIdIfDataNotExistsTest() {
-        Book book = bookDaoJdbc.getById(3);
-        Assertions.assertNull(book);
+        Assertions.assertThrows(EmptyResultDataAccessException.class, () -> bookDaoJdbc.getById(3));
+    }
+
+    @Test
+    void getAllBooksTest() {
+        List<Book> books = bookDaoJdbc.getAll();
+        Assertions.assertEquals(2, books.size());
+        Assertions.assertNotNull(books.get(0));
+        Assertions.assertNotNull(books.get(1));
+        Assertions.assertEquals("bookName1", books.get(0).getBookName());
     }
 
     @Test
@@ -40,7 +51,7 @@ class BookDaoJdbcTest {
     void deleteByIdIfExistsTest() {
         int deletedRowCount = bookDaoJdbc.deleteById(2);
         Assertions.assertEquals(1, deletedRowCount);
-        Assertions.assertNull(bookDaoJdbc.getById(2));
+        Assertions.assertThrows(EmptyResultDataAccessException.class, () -> bookDaoJdbc.getById(2));
     }
 
     @Test

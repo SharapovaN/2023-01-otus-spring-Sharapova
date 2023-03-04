@@ -5,6 +5,8 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import ru.otus.spring.homework.service.BookService;
 
+import java.util.List;
+
 
 @ShellComponent
 @RequiredArgsConstructor
@@ -15,6 +17,11 @@ public class ApplicationCommand {
     @ShellMethod(value = "Get book command", key = {"g", "get"})
     public String getBook(long id) {
         return bookService.getById(id);
+    }
+
+    @ShellMethod(value = "Get all book command", key = {"ga", "get all"})
+    public List<String> getBook() {
+        return bookService.getAll();
     }
 
     @ShellMethod(value = "Create book command", key = {"c", "create"})

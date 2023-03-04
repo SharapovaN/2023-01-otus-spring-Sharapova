@@ -6,11 +6,18 @@ import ru.otus.spring.homework.model.Book;
 import ru.otus.spring.homework.repository.BookDaoJdbc;
 import ru.otus.spring.homework.utils.StringUtils;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Service
 public class BookServiceImpl implements BookService {
 
     private final BookDaoJdbc bookDaoJdbc;
+
+    @Override
+    public List<String> getAll() {
+        return bookDaoJdbc.getAll().stream().map(Book::toString).toList();
+    }
 
     @Override
     public String getById(long id) {
