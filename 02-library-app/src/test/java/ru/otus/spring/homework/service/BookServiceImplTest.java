@@ -9,10 +9,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.spring.homework.model.Author;
 import ru.otus.spring.homework.model.Book;
 import ru.otus.spring.homework.model.Genre;
-import ru.otus.spring.homework.repository.BookDaoJdbc;
+import ru.otus.spring.homework.repository.BookRepositoryJpa;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.BDDMockito.given;
 
@@ -23,12 +24,12 @@ class BookServiceImplTest {
     private BookServiceImpl bookService;
 
     @Mock
-    private BookDaoJdbc bookDaoJdbc;
+    private BookRepositoryJpa bookRepositoryJpa;
 
     @Test
     void getByIdIfBookExistsTest() {
-        given(bookDaoJdbc.getById(1)).willReturn(new Book(1, "bookName",
-                new Author(1, "name", "surname"), new Genre(1, "genre")));
+        given(bookRepositoryJpa.findById(1)).willReturn(Optional.of(new Book(1, "bookName",
+                new Author(1, "name", "surname"), new Genre(1, "genre"))));
         String book = bookService.getById(1);
         Assertions.assertFalse(book.isEmpty());
         Assertions.assertTrue(book.contains("name"));
@@ -36,7 +37,7 @@ class BookServiceImplTest {
 
     @Test
     void getByIdIfBookNotExistsTest() {
-        given(bookDaoJdbc.getById(1)).willReturn(null);
+        given(bookRepositoryJpa.findById(1)).willReturn(Optional.empty());
         String book = bookService.getById(1);
         Assertions.assertFalse(book.isEmpty());
         Assertions.assertTrue(book.contains("not found"));
@@ -51,29 +52,22 @@ class BookServiceImplTest {
         books.add(new Book(2, "bookName",
                 new Author(1, "name", "surname"),
                 new Genre(1, "genre")));
-        given(bookDaoJdbc.getAll()).willReturn(books);
+        given(bookRepositoryJpa.findAll()).willReturn(books);
         Assertions.assertEquals(2, bookService.getAll().size());
     }
 
     @Test
     void createIfOkTest() {
-        given(bookDaoJdbc.insert("name", 1, 1)).willReturn(1);
+        given(bookRepositoryJpa.saveOrUpdate(new Book("name"), 1, 1))
+                .willReturn(new Book(3, "name"));
         String book = bookService.create("name", 1, 1);
         Assertions.assertFalse(book.isEmpty());
         Assertions.assertTrue(book.contains("Book successfully created"));
     }
 
     @Test
-    void createIfNotOkTest() {
-        given(bookDaoJdbc.insert("name", 1, 1)).willReturn(0);
-        String book = bookService.create("name", 1, 1);
-        Assertions.assertFalse(book.isEmpty());
-        Assertions.assertTrue(book.contains("Book create failed"));
-    }
-
-    @Test
     void deleteByIdIfBookExistTest() {
-        given(bookDaoJdbc.deleteById(1)).willReturn(1);
+        given(bookRepositoryJpa.deleteById(1)).willReturn(1);
         String book = bookService.deleteById(1);
         Assertions.assertFalse(book.isEmpty());
         Assertions.assertTrue(book.contains("Book successfully deleted"));
@@ -81,7 +75,7 @@ class BookServiceImplTest {
 
     @Test
     void deleteByIdIfBookNotExistTest() {
-        given(bookDaoJdbc.deleteById(1)).willReturn(0);
+        given(bookRepositoryJpa.deleteById(1)).willReturn(0);
         String book = bookService.deleteById(1);
         Assertions.assertFalse(book.isEmpty());
         Assertions.assertTrue(book.contains("Book delete failed"));
@@ -89,7 +83,10 @@ class BookServiceImplTest {
 
     @Test
     void updateIfBookExistTest() {
-        given(bookDaoJdbc.update(1, "bookName3", 2, 2)).willReturn(1);
+        given(bookRepositoryJpa.saveOrUpdate(new Book(1, "bookName3"), 2, 2))
+                .willReturn(new Book(1, "bookName3"));
+        given(bookRepositoryJpa.findById(1)).willReturn(Optional.of(new Book(1, "bookName",
+                new Author(1, "name", "surname"), new Genre(1, "genre"))));
         String book = bookService.update(1, "bookName3", 2, 2);
         Assertions.assertFalse(book.isEmpty());
         Assertions.assertTrue(book.contains("Book successfully updated"));
@@ -97,8 +94,8 @@ class BookServiceImplTest {
 
     @Test
     void updateIfBookNotExistTest() {
-        given(bookDaoJdbc.update(1, "bookName3", 2, 2)).willReturn(0);
-        String book = bookService.update(1, "bookName3", 2, 2);
+        given(bookRepositoryJpa.findById(3)).willReturn(Optional.empty());
+        String book = bookService.update(3, "bookName3", 2, 2);
         Assertions.assertFalse(book.isEmpty());
         Assertions.assertTrue(book.contains("Book update failed"));
     }
