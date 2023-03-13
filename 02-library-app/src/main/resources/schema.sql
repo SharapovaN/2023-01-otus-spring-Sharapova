@@ -3,7 +3,6 @@ DROP TABLE IF EXISTS books;
 DROP TABLE IF EXISTS genres;
 DROP TABLE IF EXISTS comments;
 
-
 CREATE TABLE authors(
     id BIGINT NOT NULL AUTO_INCREMENT,
     author_name VARCHAR(255),

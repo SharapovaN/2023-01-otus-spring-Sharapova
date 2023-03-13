@@ -16,5 +16,4 @@ public class StringUtils {
     public static final String COMMENT_NOT_DELETE_RESPONSE = "Comment delete failed";
     public static final String COMMENT_NOT_FOUND_RESPONSE = "Comment not found";
     public static final String COMMENTS_NOT_FOUND_RESPONSE = "Comment not found";
-
 }
