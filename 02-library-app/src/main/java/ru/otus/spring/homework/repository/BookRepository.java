@@ -13,4 +13,6 @@ public interface BookRepository {
     Book saveOrUpdate(Book book, long authorId, long genreId);
 
     Integer deleteById(long id);
+
+    boolean checkBookExists(long id);
 }

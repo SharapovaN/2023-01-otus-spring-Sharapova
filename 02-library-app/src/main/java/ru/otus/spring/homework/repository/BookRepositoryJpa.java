@@ -25,7 +25,10 @@ public class BookRepositoryJpa implements BookRepository {
     public List<Book> findAll() {
         EntityGraph<?> entityGraph = em.getEntityGraph("book-author-genre-entity-graph");
         TypedQuery<Book> query = em.createQuery("""
-                SELECT b FROM Book b JOIN b.author JOIN b.genre
+                SELECT b FROM Book b
+                JOIN b.author
+                JOIN b.genre
+                LEFT JOIN FETCH b.comments
                 """, Book.class);
         query.setHint("javax.persistence.fetchgraph", entityGraph);
         return query.getResultList();
@@ -52,10 +55,15 @@ public class BookRepositoryJpa implements BookRepository {
 
     @Override
     public Integer deleteById(long id) {
-        Query query = em.createQuery("""
-                DELETE FROM Book b WHERE b.id = :id
-                """);
+        Query query = em.createQuery("DELETE FROM Book b WHERE b.id = :id");
         query.setParameter("id", id);
         return query.executeUpdate();
+    }
+
+    @Override
+    public boolean checkBookExists(long id) {
+        Query query = em.createNativeQuery("SELECT EXISTS (SELECT * FROM books WHERE id = :id)");
+        query.setParameter("id", id);
+        return (boolean) query.getSingleResult();
     }
 }

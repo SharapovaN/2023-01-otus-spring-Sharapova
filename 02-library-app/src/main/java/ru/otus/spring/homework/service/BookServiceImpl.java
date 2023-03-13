@@ -48,13 +48,14 @@ public class BookServiceImpl implements BookService {
     @Override
     public String update(long id, String bookName, long authorId, long genreId) {
         Book updatedBook = null;
-        if (bookExists(id)) {
+        if (checkBookExists(id)) {
             updatedBook = bookRepositoryJpa.saveOrUpdate(new Book(id, bookName), authorId, genreId);
         }
         return updatedBook != null ? StringUtils.BOOK_UPDATED_RESPONSE : StringUtils.BOOK_NOT_UPDATED_RESPONSE;
     }
 
-    private boolean bookExists(long id) {
-        return bookRepositoryJpa.findById(id).isPresent();
+    @Override
+    public boolean checkBookExists(long id) {
+        return bookRepositoryJpa.checkBookExists(id);
     }
 }

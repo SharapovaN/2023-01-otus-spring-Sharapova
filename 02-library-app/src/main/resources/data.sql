@@ -6,3 +6,4 @@ INSERT INTO genres (genre_name) VALUES ('Fantasy');
 
 INSERT INTO books (book_name, author_id, genre_id) VALUES ('Captains daughter', 1, 1);
 INSERT INTO books (book_name, author_id, genre_id) VALUES ('Lord Of The Rings', 2, 2);
+

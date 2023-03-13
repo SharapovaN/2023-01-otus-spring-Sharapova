@@ -12,4 +12,6 @@ public interface BookService {
     String deleteById(long id);
 
     String update(long id, String bookName, long authorId, long genreId);
+
+    boolean checkBookExists(long id);
 }

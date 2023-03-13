@@ -53,7 +53,6 @@ class BookRepositoryJpaTest {
         Book expectedBook = em.find(Book.class, 3);
         assertThat(savedBook)
                 .usingRecursiveComparison().isEqualTo(expectedBook);
-
     }
 
     @Test
@@ -88,5 +87,15 @@ class BookRepositoryJpaTest {
     void updateIfWrongDataExistsTest() {
         Assertions.assertThrows(EntityNotFoundException.class, () ->
                 bookRepositoryJpa.saveOrUpdate(new Book(3, "bookName3"), 3, 3));
+    }
+
+    @Test
+    void checkBookExistsIfTrueTest() {
+        Assertions.assertTrue(bookRepositoryJpa.checkBookExists(1));
+    }
+
+    @Test
+    void checkBookExistsIfFalseTest() {
+        Assertions.assertFalse(bookRepositoryJpa.checkBookExists(7));
     }
 }
