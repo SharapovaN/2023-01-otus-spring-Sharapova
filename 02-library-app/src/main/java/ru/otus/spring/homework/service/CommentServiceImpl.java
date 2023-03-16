@@ -44,15 +44,22 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public String deleteById(long id) {
-        int deletedComments = commentRepository.deleteById(id);
-        return deletedComments > 0 ? StringUtils.COMMENT_DELETE_RESPONSE : StringUtils.COMMENT_NOT_DELETE_RESPONSE;
+        if (commentRepository.findById(id).isPresent()) {
+            commentRepository.delete(new Comment(id));
+            return StringUtils.COMMENT_DELETE_RESPONSE;
+        }
+        return StringUtils.COMMENT_NOT_DELETE_RESPONSE;
     }
 
     @Transactional
     @Override
     public String update(long id, long bookId, String comment) {
-        if (commentRepository.findById(id).isPresent()) {
-            commentRepository.saveOrUpdate(new Comment(id, bookId, comment));
+        Optional<Comment> optionalComment = commentRepository.findById(id);
+        if (optionalComment.isPresent()) {
+            Comment updateComment = optionalComment.get();
+            updateComment.setBookId(bookId);
+            updateComment.setComment(comment);
+            commentRepository.saveOrUpdate(updateComment);
             return StringUtils.COMMENT_UPDATED_RESPONSE;
         }
         return StringUtils.COMMENT_NOT_UPDATED_RESPONSE;

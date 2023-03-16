@@ -42,12 +42,16 @@ public class Book {
     @JoinColumn(name = "genre_id", referencedColumnName = "id")
     private Genre genre;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "book_id")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "book_id", updatable = false)
     private List<Comment> comments;
 
     public Book(String bookName) {
         this.bookName = bookName;
+    }
+
+    public Book(long id) {
+        this.id = id;
     }
 
     public Book(long id, String bookName) {

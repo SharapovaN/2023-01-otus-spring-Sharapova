@@ -2,22 +2,20 @@ package ru.otus.spring.homework.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import ru.otus.spring.homework.model.Comment;
 
 import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
-@Repository
+@Component
 public class CommentRepositoryJpa implements CommentRepository {
 
     @PersistenceContext
     private final EntityManager em;
-
 
     @Override
     public List<Comment> findAll() {
@@ -41,9 +39,7 @@ public class CommentRepositoryJpa implements CommentRepository {
     }
 
     @Override
-    public Integer deleteById(long id) {
-        Query query = em.createQuery("DELETE FROM Comment c WHERE c.id = :id");
-        query.setParameter("id", id);
-        return query.executeUpdate();
+    public void delete(Comment comment) {
+        em.remove(em.contains(comment) ? comment : em.merge(comment));
     }
 }

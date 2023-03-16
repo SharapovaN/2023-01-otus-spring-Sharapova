@@ -50,20 +50,14 @@ class CommentRepositoryJpaTest {
         Comment savedComment = commentRepositoryJpa.saveOrUpdate(new Comment(1, "newComment"));
         Comment expectedComment = em.find(Comment.class, 5);
         Assertions.assertEquals(savedComment.getComment(), expectedComment.getComment());
-        Assertions.assertEquals(savedComment.getBook_id(), expectedComment.getBook_id());
+        Assertions.assertEquals(savedComment.getBookId(), expectedComment.getBookId());
     }
 
     @Test
     void deleteByIdIfExistsTest() {
-        int deletedRowsCount = commentRepositoryJpa.deleteById(1);
+        Comment comment = new Comment(1);
+        commentRepositoryJpa.delete(comment);
         Assertions.assertFalse(commentRepositoryJpa.findById(1).isPresent());
-        Assertions.assertEquals(1, deletedRowsCount);
-    }
-
-    @Test
-    void deleteByIdIfNotExistsTest() {
-        int deletedRowsCount = commentRepositoryJpa.deleteById(5);
-        Assertions.assertEquals(0, deletedRowsCount);
     }
 
     @Test
@@ -71,6 +65,6 @@ class CommentRepositoryJpaTest {
         commentRepositoryJpa.saveOrUpdate(new Comment(1, 2, "newComment"));
         Comment loadedComment = em.find(Comment.class, 1);
         Assertions.assertEquals("newComment", loadedComment.getComment());
-        Assertions.assertEquals(2, loadedComment.getBook_id());
+        Assertions.assertEquals(2, loadedComment.getBookId());
     }
 }

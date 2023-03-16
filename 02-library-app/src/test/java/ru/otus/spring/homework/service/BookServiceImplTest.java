@@ -26,6 +26,12 @@ class BookServiceImplTest {
     @Mock
     private BookRepositoryJpa bookRepositoryJpa;
 
+    @Mock
+    private AuthorService authorService;
+
+    @Mock
+    private GenreService genreService;
+
     @Test
     void getByIdIfBookExistsTest() {
         given(bookRepositoryJpa.findById(1)).willReturn(Optional.of(new Book(1, "bookName",
@@ -58,38 +64,48 @@ class BookServiceImplTest {
 
     @Test
     void createIfOkTest() {
-        given(bookRepositoryJpa.saveOrUpdate(new Book("name"), 1, 1))
+        Book newBook = new Book("name");
+        newBook.setGenre(new Genre(1));
+        newBook.setAuthor(new Author(1));
+        given(bookRepositoryJpa.saveOrUpdate(newBook))
                 .willReturn(new Book(3, "name"));
+        given(authorService.getById(1)).willReturn(new Author(1));
+        given(genreService.getById(1)).willReturn(new Genre(1));
         String book = bookService.create("name", 1, 1);
         Assertions.assertTrue(book.contains("Book successfully created"));
     }
 
     @Test
     void deleteByIdIfBookExistTest() {
-        given(bookRepositoryJpa.deleteById(1)).willReturn(1);
+        given(bookRepositoryJpa.checkBookExists(1)).willReturn(true);
         String book = bookService.deleteById(1);
         Assertions.assertTrue(book.contains("Book successfully deleted"));
     }
 
     @Test
     void deleteByIdIfBookNotExistTest() {
-        given(bookRepositoryJpa.deleteById(1)).willReturn(0);
+        given(bookRepositoryJpa.checkBookExists(1)).willReturn(false);
         String book = bookService.deleteById(1);
         Assertions.assertTrue(book.contains("Book delete failed"));
     }
 
     @Test
     void updateIfBookExistTest() {
-        given(bookRepositoryJpa.saveOrUpdate(new Book(1, "bookName3"), 2, 2))
+        Book bookToUpdate = new Book(1, "bookName3");
+        bookToUpdate.setGenre(new Genre(2));
+        bookToUpdate.setAuthor(new Author(2));
+        given(bookRepositoryJpa.saveOrUpdate(bookToUpdate))
                 .willReturn(new Book(1, "bookName3"));
-        given(bookRepositoryJpa.checkBookExists(1)).willReturn(true);
+        given(authorService.getById(2)).willReturn(new Author(2));
+        given(genreService.getById(2)).willReturn(new Genre(2));
+        given(bookRepositoryJpa.findById(1)).willReturn(Optional.of(bookToUpdate));
         String book = bookService.update(1, "bookName3", 2, 2);
         Assertions.assertTrue(book.contains("Book successfully updated"));
     }
 
     @Test
     void updateIfBookNotExistTest() {
-        given(bookRepositoryJpa.checkBookExists(3)).willReturn(false);
+        given(bookRepositoryJpa.findById(3)).willReturn(Optional.empty());
         String book = bookService.update(3, "bookName3", 2, 2);
         Assertions.assertTrue(book.contains("Book update failed"));
     }

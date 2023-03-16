@@ -6,16 +6,14 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Repository;
-import ru.otus.spring.homework.model.Author;
+import org.springframework.stereotype.Component;
 import ru.otus.spring.homework.model.Book;
-import ru.otus.spring.homework.model.Genre;
 
 import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
-@Repository
+@Component
 public class BookRepositoryJpa implements BookRepository {
 
     @PersistenceContext
@@ -24,12 +22,7 @@ public class BookRepositoryJpa implements BookRepository {
     @Override
     public List<Book> findAll() {
         EntityGraph<?> entityGraph = em.getEntityGraph("book-author-genre-entity-graph");
-        TypedQuery<Book> query = em.createQuery("""
-                SELECT b FROM Book b
-                JOIN b.author
-                JOIN b.genre
-                LEFT JOIN FETCH b.comments
-                """, Book.class);
+        TypedQuery<Book> query = em.createQuery("SELECT b FROM Book b", Book.class);
         query.setHint("javax.persistence.fetchgraph", entityGraph);
         return query.getResultList();
     }
@@ -40,11 +33,7 @@ public class BookRepositoryJpa implements BookRepository {
     }
 
     @Override
-    public Book saveOrUpdate(Book book, long authorId, long genreId) {
-        Author author = em.getReference(Author.class, authorId);
-        Genre genre = em.getReference(Genre.class, genreId);
-        book.setAuthor(author);
-        book.setGenre(genre);
+    public Book saveOrUpdate(Book book) {
         if (book.getId() <= 0) {
             em.persist(book);
             return book;
@@ -54,10 +43,8 @@ public class BookRepositoryJpa implements BookRepository {
     }
 
     @Override
-    public Integer deleteById(long id) {
-        Query query = em.createQuery("DELETE FROM Book b WHERE b.id = :id");
-        query.setParameter("id", id);
-        return query.executeUpdate();
+    public void delete(Book book) {
+        em.remove(em.contains(book) ? book : em.merge(book));
     }
 
     @Override

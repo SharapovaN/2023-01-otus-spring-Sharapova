@@ -69,14 +69,14 @@ class CommentServiceImplTest {
 
     @Test
     void deleteByIdIfCommentExistTest() {
-        given(commentRepositoryJpa.deleteById(1)).willReturn(1);
+        given(commentRepositoryJpa.findById(1)).willReturn(Optional.of(new Comment(1)));
         String comment = commentService.deleteById(1);
         Assertions.assertTrue(comment.contains("Comment successfully deleted"));
     }
 
     @Test
     void deleteByIdIfCommentNotExistTest() {
-        given(commentRepositoryJpa.deleteById(1)).willReturn(0);
+        given(commentRepositoryJpa.findById(1)).willReturn(Optional.empty());
         String comment = commentService.deleteById(1);
         Assertions.assertTrue(comment.contains("Comment delete failed"));
     }

@@ -21,6 +21,11 @@ public class ApplicationCommand {
         return bookService.getById(id);
     }
 
+    @ShellMethod(value = "Get book comments command", key = {"gcb", "get book comments"})
+    public List<String> getCommentsForBook(long id) {
+        return bookService.getCommentsForBook(id);
+    }
+
     @ShellMethod(value = "Get all books command", key = {"gab", "get all books"})
     public List<String> getAllBooks() {
         return bookService.getAll();

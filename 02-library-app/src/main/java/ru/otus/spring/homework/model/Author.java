@@ -25,4 +25,8 @@ public class Author {
 
     @Column(name = "author_surname")
     private String authorSurname;
+
+    public Author(long id) {
+        this.id = id;
+    }
 }

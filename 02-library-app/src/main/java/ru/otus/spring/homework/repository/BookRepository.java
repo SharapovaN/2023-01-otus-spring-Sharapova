@@ -10,9 +10,9 @@ public interface BookRepository {
 
     Optional<Book> findById(long id);
 
-    Book saveOrUpdate(Book book, long authorId, long genreId);
+    Book saveOrUpdate(Book book);
 
-    Integer deleteById(long id);
+    void delete(Book book);
 
     boolean checkBookExists(long id);
 }

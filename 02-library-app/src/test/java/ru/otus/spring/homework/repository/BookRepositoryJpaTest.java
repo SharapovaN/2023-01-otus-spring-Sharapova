@@ -1,14 +1,14 @@
 package ru.otus.spring.homework.repository;
 
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.PersistenceException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
+import ru.otus.spring.homework.model.Author;
 import ru.otus.spring.homework.model.Book;
+import ru.otus.spring.homework.model.Genre;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,44 +49,31 @@ class BookRepositoryJpaTest {
 
     @Test
     void saveBookIfOkTest() {
-        Book savedBook = bookRepositoryJpa.saveOrUpdate(new Book("bookName3"), 1, 1);
+        Book newBook = new Book("bookName3");
+        newBook.setGenre(new Genre(1));
+        newBook.setAuthor(new Author(1));
+        Book savedBook = bookRepositoryJpa.saveOrUpdate(newBook);
         Book expectedBook = em.find(Book.class, 3);
         assertThat(savedBook)
                 .usingRecursiveComparison().isEqualTo(expectedBook);
     }
 
     @Test
-    void saveBookIfNotOkTest() {
-        Assertions.assertThrows(PersistenceException.class,
-                () -> bookRepositoryJpa.saveOrUpdate(new Book("bookName3"), 3, 3));
-    }
-
-    @Test
     void deleteByIdIfExistsTest() {
-        int deletedRowsCount = bookRepositoryJpa.deleteById(1);
+        bookRepositoryJpa.delete(new Book(1));
         Assertions.assertFalse(bookRepositoryJpa.findById(1).isPresent());
-        Assertions.assertEquals(1, deletedRowsCount);
-    }
-
-    @Test
-    void deleteByIdIfNotExistsTest() {
-        int deletedRowsCount = bookRepositoryJpa.deleteById(3);
-        Assertions.assertEquals(0, deletedRowsCount);
     }
 
     @Test
     void updateIfExistsTest() {
-        bookRepositoryJpa.saveOrUpdate(new Book(1, "bookName3"), 2, 2);
+        Book book = new Book(1, "bookName3");
+        book.setGenre(new Genre(2));
+        book.setAuthor(new Author(2));
+        bookRepositoryJpa.saveOrUpdate(book);
         Book loadedBook = em.find(Book.class, 1);
         Assertions.assertEquals("bookName3", loadedBook.getBookName());
         Assertions.assertEquals(2, loadedBook.getAuthor().getId());
         Assertions.assertEquals(2, loadedBook.getGenre().getId());
-    }
-
-    @Test
-    void updateIfWrongDataExistsTest() {
-        Assertions.assertThrows(EntityNotFoundException.class, () ->
-                bookRepositoryJpa.saveOrUpdate(new Book(3, "bookName3"), 3, 3));
     }
 
     @Test

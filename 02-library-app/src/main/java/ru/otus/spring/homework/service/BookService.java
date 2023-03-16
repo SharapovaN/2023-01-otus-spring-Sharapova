@@ -7,6 +7,8 @@ public interface BookService {
 
     String getById(long id);
 
+    List<String> getCommentsForBook(long id);
+
     String create(String bookName, long authorId, long genreId);
 
     String deleteById(long id);
