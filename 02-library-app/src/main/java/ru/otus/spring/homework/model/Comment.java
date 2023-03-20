@@ -14,19 +14,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "authors")
-public class Author {
+@Table(name = "comments")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "author_name")
-    private String authorName;
+    @Column(name = "book_id")
+    private long bookId;
 
-    @Column(name = "author_surname")
-    private String authorSurname;
+    @Column(name = "comment")
+    private String comment;
 
-    public Author(long id) {
+    public Comment(long bookId, String comment) {
+        this.bookId = bookId;
+        this.comment = comment;
+    }
+
+    public Comment(long id) {
         this.id = id;
     }
 }
