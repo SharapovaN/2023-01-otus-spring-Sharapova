@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.spring.homework.model.Author;
 import ru.otus.spring.homework.model.Book;
 import ru.otus.spring.homework.model.Genre;
-import ru.otus.spring.homework.repository.BookRepositoryJpa;
+import ru.otus.spring.homework.repository.BookRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ class BookServiceImplTest {
     private BookServiceImpl bookService;
 
     @Mock
-    private BookRepositoryJpa bookRepositoryJpa;
+    private BookRepository bookRepository;
 
     @Mock
     private AuthorService authorService;
@@ -34,7 +34,7 @@ class BookServiceImplTest {
 
     @Test
     void getByIdIfBookExistsTest() {
-        given(bookRepositoryJpa.findById(1)).willReturn(Optional.of(new Book(1, "bookName",
+        given(bookRepository.findById(1L)).willReturn(Optional.of(new Book(1, "bookName",
                 new Author(1, "name", "surname"), new Genre(1, "genre"), null)));
         String book = bookService.getById(1);
         Assertions.assertTrue(book.contains("name"));
@@ -42,7 +42,7 @@ class BookServiceImplTest {
 
     @Test
     void getByIdIfBookNotExistsTest() {
-        given(bookRepositoryJpa.findById(1)).willReturn(Optional.empty());
+        given(bookRepository.findById(1L)).willReturn(Optional.empty());
         String book = bookService.getById(1);
         Assertions.assertTrue(book.contains("not found"));
     }
@@ -58,7 +58,7 @@ class BookServiceImplTest {
                 new Author(1, "name", "surname"),
                 new Genre(1, "genre"),
                 null));
-        given(bookRepositoryJpa.findAll()).willReturn(books);
+        given(bookRepository.findAll()).willReturn(books);
         Assertions.assertEquals(2, bookService.getAll().size());
     }
 
@@ -67,7 +67,7 @@ class BookServiceImplTest {
         Book newBook = new Book("name");
         newBook.setGenre(new Genre(1));
         newBook.setAuthor(new Author(1));
-        given(bookRepositoryJpa.saveOrUpdate(newBook))
+        given(bookRepository.save(newBook))
                 .willReturn(new Book(3, "name"));
         given(authorService.getById(1)).willReturn(new Author(1));
         given(genreService.getById(1)).willReturn(new Genre(1));
@@ -77,14 +77,14 @@ class BookServiceImplTest {
 
     @Test
     void deleteByIdIfBookExistTest() {
-        given(bookRepositoryJpa.checkBookExists(1)).willReturn(true);
+        given(bookRepository.existsById(1L)).willReturn(true);
         String book = bookService.deleteById(1);
         Assertions.assertTrue(book.contains("Book successfully deleted"));
     }
 
     @Test
     void deleteByIdIfBookNotExistTest() {
-        given(bookRepositoryJpa.checkBookExists(1)).willReturn(false);
+        given(bookRepository.existsById(1L)).willReturn(false);
         String book = bookService.deleteById(1);
         Assertions.assertTrue(book.contains("Book delete failed"));
     }
@@ -94,18 +94,18 @@ class BookServiceImplTest {
         Book bookToUpdate = new Book(1, "bookName3");
         bookToUpdate.setGenre(new Genre(2));
         bookToUpdate.setAuthor(new Author(2));
-        given(bookRepositoryJpa.saveOrUpdate(bookToUpdate))
+        given(bookRepository.save(bookToUpdate))
                 .willReturn(new Book(1, "bookName3"));
         given(authorService.getById(2)).willReturn(new Author(2));
         given(genreService.getById(2)).willReturn(new Genre(2));
-        given(bookRepositoryJpa.findById(1)).willReturn(Optional.of(bookToUpdate));
+        given(bookRepository.findById(1L)).willReturn(Optional.of(bookToUpdate));
         String book = bookService.update(1, "bookName3", 2, 2);
         Assertions.assertTrue(book.contains("Book successfully updated"));
     }
 
     @Test
     void updateIfBookNotExistTest() {
-        given(bookRepositoryJpa.findById(3)).willReturn(Optional.empty());
+        given(bookRepository.findById(3L)).willReturn(Optional.empty());
         String book = bookService.update(3, "bookName3", 2, 2);
         Assertions.assertTrue(book.contains("Book update failed"));
     }

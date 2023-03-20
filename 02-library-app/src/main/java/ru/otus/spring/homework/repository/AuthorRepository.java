@@ -1,9 +1,7 @@
 package ru.otus.spring.homework.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.otus.spring.homework.model.Author;
 
-import java.util.Optional;
-
-public interface AuthorRepository {
-    Optional<Author> findById(long id);
+public interface AuthorRepository extends JpaRepository<Author, Long> {
 }
