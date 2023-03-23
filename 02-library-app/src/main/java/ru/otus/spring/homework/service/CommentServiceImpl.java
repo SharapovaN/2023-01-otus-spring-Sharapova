@@ -31,7 +31,6 @@ public class CommentServiceImpl implements CommentService {
         return comment.isPresent() ? comment.get().toString() : StringUtils.COMMENT_NOT_FOUND_RESPONSE;
     }
 
-    @Transactional
     @Override
     public String create(long bookId, String comment) {
         if (bookService.checkBookExists(bookId)) {
@@ -41,7 +40,6 @@ public class CommentServiceImpl implements CommentService {
         return StringUtils.COMMENT_NOT_CREATED_RESPONSE;
     }
 
-    @Transactional
     @Override
     public String deleteById(long id) {
         if (commentRepository.findById(id).isPresent()) {
@@ -51,7 +49,6 @@ public class CommentServiceImpl implements CommentService {
         return StringUtils.COMMENT_NOT_DELETE_RESPONSE;
     }
 
-    @Transactional
     @Override
     public String update(long id, long bookId, String comment) {
         Optional<Comment> optionalComment = commentRepository.findById(id);

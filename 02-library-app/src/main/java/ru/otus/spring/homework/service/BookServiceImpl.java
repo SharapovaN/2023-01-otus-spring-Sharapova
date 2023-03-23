@@ -41,7 +41,6 @@ public class BookServiceImpl implements BookService {
                 .orElse(new ArrayList<>(Collections.singleton(StringUtils.COMMENTS_NOT_FOUND_RESPONSE)));
     }
 
-    @Transactional
     @Override
     public String create(String bookName, long authorId, long genreId) {
         Book book = new Book(bookName);
@@ -51,7 +50,6 @@ public class BookServiceImpl implements BookService {
         return StringUtils.BOOK_CREATED_RESPONSE;
     }
 
-    @Transactional
     @Override
     public String deleteById(long id) {
         if (checkBookExists(id)) {
@@ -61,7 +59,6 @@ public class BookServiceImpl implements BookService {
         return StringUtils.BOOK_NOT_DELETE_RESPONSE;
     }
 
-    @Transactional
     @Override
     public String update(long id, String bookName, long authorId, long genreId) {
         Optional<Book> optionalBook = bookRepository.findById(id);
