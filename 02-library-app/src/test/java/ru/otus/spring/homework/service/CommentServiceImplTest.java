@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.spring.homework.model.Comment;
-import ru.otus.spring.homework.repository.CommentRepositoryJpa;
+import ru.otus.spring.homework.repository.CommentRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,35 +25,35 @@ class CommentServiceImplTest {
     BookServiceImpl bookService;
 
     @Mock
-    private CommentRepositoryJpa commentRepositoryJpa;
+    private CommentRepository commentRepository;
 
     @Test
     void getAllCommentsTest() {
         List<Comment> comments = new ArrayList<>();
         comments.add(new Comment(1, 1, "comment1"));
         comments.add(new Comment(2, 1, "comment2"));
-        given(commentRepositoryJpa.findAll()).willReturn(comments);
+        given(commentRepository.findAll()).willReturn(comments);
         List<String> commentList = commentService.getAll();
         Assertions.assertEquals(2, commentList.size());
     }
 
     @Test
     void getByIdIfExistsTest() {
-        given(commentRepositoryJpa.findById(1)).willReturn(Optional.of(new Comment(1, 1, "comment1")));
+        given(commentRepository.findById(1L)).willReturn(Optional.of(new Comment(1, 1, "comment1")));
         String comment = commentService.getById(1);
         Assertions.assertTrue(comment.contains("comment1"));
     }
 
     @Test
     void getByIdIfNotExistsTest() {
-        given(commentRepositoryJpa.findById(1)).willReturn(Optional.empty());
+        given(commentRepository.findById(1L)).willReturn(Optional.empty());
         String comment = commentService.getById(1);
         Assertions.assertTrue(comment.contains("not found"));
     }
 
     @Test
     void createIfOkTest() {
-        given(commentRepositoryJpa.saveOrUpdate(new Comment(1, "comment1")))
+        given(commentRepository.save(new Comment(1, "comment1")))
                 .willReturn(new Comment(1, "comment1"));
         given(bookService.checkBookExists(1)).willReturn(true);
         String comment = commentService.create(1, "comment1");
@@ -69,30 +69,30 @@ class CommentServiceImplTest {
 
     @Test
     void deleteByIdIfCommentExistTest() {
-        given(commentRepositoryJpa.findById(1)).willReturn(Optional.of(new Comment(1)));
+        given(commentRepository.findById(1L)).willReturn(Optional.of(new Comment(1)));
         String comment = commentService.deleteById(1);
         Assertions.assertTrue(comment.contains("Comment successfully deleted"));
     }
 
     @Test
     void deleteByIdIfCommentNotExistTest() {
-        given(commentRepositoryJpa.findById(1)).willReturn(Optional.empty());
+        given(commentRepository.findById(1L)).willReturn(Optional.empty());
         String comment = commentService.deleteById(1);
         Assertions.assertTrue(comment.contains("Comment delete failed"));
     }
 
     @Test
     void updateIfCommentExistTest() {
-        given(commentRepositoryJpa.saveOrUpdate(new Comment(1, 1, "newComment")))
+        given(commentRepository.save(new Comment(1, 1, "newComment")))
                 .willReturn(new Comment(1, 1, "newComment"));
-        given(commentRepositoryJpa.findById(1)).willReturn(Optional.of(new Comment(1, 1, "newComment")));
+        given(commentRepository.findById(1L)).willReturn(Optional.of(new Comment(1, 1, "newComment")));
         String comment = commentService.update(1, 1, "newComment");
         Assertions.assertTrue(comment.contains("Comment successfully updated"));
     }
 
     @Test
     void updateIfCommentNotExistTest() {
-        given(commentRepositoryJpa.findById(1)).willReturn(Optional.empty());
+        given(commentRepository.findById(1L)).willReturn(Optional.empty());
         String comment = commentService.update(1, 1, "newComment");
         Assertions.assertTrue(comment.contains("Comment update failed"));
     }

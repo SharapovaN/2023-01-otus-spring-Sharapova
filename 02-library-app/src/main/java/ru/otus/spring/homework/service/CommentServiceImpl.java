@@ -31,17 +31,15 @@ public class CommentServiceImpl implements CommentService {
         return comment.isPresent() ? comment.get().toString() : StringUtils.COMMENT_NOT_FOUND_RESPONSE;
     }
 
-    @Transactional
     @Override
     public String create(long bookId, String comment) {
         if (bookService.checkBookExists(bookId)) {
-            commentRepository.saveOrUpdate(new Comment(bookId, comment));
+            commentRepository.save(new Comment(bookId, comment));
             return StringUtils.COMMENT_CREATED_RESPONSE;
         }
         return StringUtils.COMMENT_NOT_CREATED_RESPONSE;
     }
 
-    @Transactional
     @Override
     public String deleteById(long id) {
         if (commentRepository.findById(id).isPresent()) {
@@ -51,7 +49,6 @@ public class CommentServiceImpl implements CommentService {
         return StringUtils.COMMENT_NOT_DELETE_RESPONSE;
     }
 
-    @Transactional
     @Override
     public String update(long id, long bookId, String comment) {
         Optional<Comment> optionalComment = commentRepository.findById(id);
@@ -59,7 +56,7 @@ public class CommentServiceImpl implements CommentService {
             Comment updateComment = optionalComment.get();
             updateComment.setBookId(bookId);
             updateComment.setComment(comment);
-            commentRepository.saveOrUpdate(updateComment);
+            commentRepository.save(updateComment);
             return StringUtils.COMMENT_UPDATED_RESPONSE;
         }
         return StringUtils.COMMENT_NOT_UPDATED_RESPONSE;
