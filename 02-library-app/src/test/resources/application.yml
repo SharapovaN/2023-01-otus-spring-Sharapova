@@ -1,16 +1,20 @@
 spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-  sql:
-    init:
-      mode: always
-      data-locations: data.sql
-  jpa:
-    generate-ddl: false
-    hibernate:
-      ddl-auto: none
-    show-sql: true
+  data:
+    mongodb:
+      port: 0
+      database: test
 
-logging:
-  level:
-    ROOT: ERROR
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.0.2
+
+mongock:
+  runner-type: "ApplicationRunner"
+  change-logs-scan-package:
+    - ru.otus.spring.homework.mongock.changelog
+  mongo-db:
+    write-concern:
+      journal: false
+    read-concern: local

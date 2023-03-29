@@ -2,7 +2,7 @@ package ru.otus.spring.homework.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import ru.otus.spring.homework.model.Book;
 import ru.otus.spring.homework.model.Comment;
 import ru.otus.spring.homework.repository.CommentRepository;
 import ru.otus.spring.homework.utils.StringUtils;
@@ -26,24 +26,23 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public String getById(long id) {
+    public String getById(String id) {
         Optional<Comment> comment = commentRepository.findById(id);
         return comment.isPresent() ? comment.get().toString() : StringUtils.COMMENT_NOT_FOUND_RESPONSE;
     }
 
-    @Transactional
     @Override
-    public String create(long bookId, String comment) {
+    public String create(String bookId, String comment) {
         if (bookService.checkBookExists(bookId)) {
-            commentRepository.saveOrUpdate(new Comment(bookId, comment));
-            return StringUtils.COMMENT_CREATED_RESPONSE;
+            Book book = bookService.getBookById(bookId);
+            Comment savedComment = commentRepository.save(new Comment(null, book, comment));
+            return StringUtils.COMMENT_CREATED_RESPONSE + savedComment.getId();
         }
         return StringUtils.COMMENT_NOT_CREATED_RESPONSE;
     }
 
-    @Transactional
     @Override
-    public String deleteById(long id) {
+    public String deleteById(String id) {
         if (commentRepository.findById(id).isPresent()) {
             commentRepository.delete(new Comment(id));
             return StringUtils.COMMENT_DELETE_RESPONSE;
@@ -51,15 +50,15 @@ public class CommentServiceImpl implements CommentService {
         return StringUtils.COMMENT_NOT_DELETE_RESPONSE;
     }
 
-    @Transactional
     @Override
-    public String update(long id, long bookId, String comment) {
+    public String update(String id, String bookId, String comment) {
         Optional<Comment> optionalComment = commentRepository.findById(id);
         if (optionalComment.isPresent()) {
+            Book book = bookService.getBookById(bookId);
             Comment updateComment = optionalComment.get();
-            updateComment.setBookId(bookId);
+            updateComment.setBook(book);
             updateComment.setComment(comment);
-            commentRepository.saveOrUpdate(updateComment);
+            commentRepository.save(updateComment);
             return StringUtils.COMMENT_UPDATED_RESPONSE;
         }
         return StringUtils.COMMENT_NOT_UPDATED_RESPONSE;

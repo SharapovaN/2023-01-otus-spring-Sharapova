@@ -5,11 +5,11 @@ import java.util.List;
 public interface CommentService {
     List<String> getAll();
 
-    String getById(long id);
+    String getById(String id);
 
-    String create(long bookId, String comment);
+    String create(String bookId, String comment);
 
-    String deleteById(long id);
+    String deleteById(String id);
 
-    String update(long id, long bookId, String comment);
+    String update(String id, String bookId, String comment);
 }
