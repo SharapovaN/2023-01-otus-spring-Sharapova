@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
 import org.springframework.stereotype.Component;
 import ru.otus.spring.homework.model.Book;
 import ru.otus.spring.homework.model.Comment;
-import ru.otus.spring.homework.repository.AuthorRepository;
 import ru.otus.spring.homework.repository.CommentRepository;
 import ru.otus.spring.homework.repository.GenreRepository;
 
@@ -18,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MongoBookCascadeEventsListener extends AbstractMongoEventListener<Book> {
 
-    private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
     private final CommentRepository commentRepository;
 
@@ -26,9 +24,6 @@ public class MongoBookCascadeEventsListener extends AbstractMongoEventListener<B
     public void onBeforeConvert(BeforeConvertEvent<Book> event) {
         super.onBeforeConvert(event);
         Book book = event.getSource();
-        if (authorRepository.findByAuthorName(book.getAuthor().getAuthorName()).isEmpty()) {
-            authorRepository.save(book.getAuthor());
-        }
         if (genreRepository.findByGenreName(book.getGenre().getGenreName()).isEmpty()) {
             genreRepository.save(book.getGenre());
         }

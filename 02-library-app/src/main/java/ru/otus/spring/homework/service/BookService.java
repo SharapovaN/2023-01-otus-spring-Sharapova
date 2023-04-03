@@ -11,11 +11,11 @@ public interface BookService {
 
     List<String> getCommentsForBook(String id);
 
-    String create(String bookName, String authorName, String genreName);
+    String create(String bookName, String authorId, String genreName);
 
     String deleteById(String id);
 
-    String update(String id, String bookName, String authorName, String genreName);
+    String update(String id, String bookName, String authorId, String genreName);
 
     boolean checkBookExists(String id);
 

@@ -2,6 +2,7 @@ package ru.otus.spring.homework.utils;
 
 public class StringUtils {
     public static final String BOOK_CREATED_RESPONSE = "Book successfully created, book id = ";
+    public static final String BOOK_NOT_CREATED_RESPONSE = "Book creation failed, unknown authorId = ";
     public static final String BOOK_UPDATED_RESPONSE = "Book successfully updated";
     public static final String BOOK_NOT_UPDATED_RESPONSE = "Book update failed";
     public static final String BOOK_DELETE_RESPONSE = "Book successfully deleted";

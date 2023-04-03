@@ -20,6 +20,7 @@ public class Book {
 
     private String bookName;
 
+    @DBRef
     private Author author;
 
     private Genre genre;

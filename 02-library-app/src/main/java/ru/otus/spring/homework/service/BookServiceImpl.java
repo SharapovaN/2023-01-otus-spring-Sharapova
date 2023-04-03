@@ -21,6 +21,8 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
 
+    private final AuthorService authorService;
+
     @Override
     public List<String> getAll() {
         List<String> books = bookRepository.findAll().stream().map(this::getBookInfo).toList();
@@ -41,10 +43,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public String create(String bookName, String authorName, String genreName) {
+    public String create(String bookName, String authorId, String genreName) {
+        Author author = authorService.getById(authorId);
+        if (author == null) {
+            return StringUtils.BOOK_NOT_CREATED_RESPONSE + authorId;
+        }
         Book newBook = new Book(bookName);
         newBook.setId(null);
-        newBook.setAuthor(new Author(authorName));
+        newBook.setAuthor(author);
         newBook.setGenre(new Genre(genreName));
         Book book = bookRepository.save(newBook);
         return StringUtils.BOOK_CREATED_RESPONSE + book.getId();
@@ -62,12 +68,13 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public String update(String id, String bookName, String authorName, String genreName) {
+    public String update(String id, String bookName, String authorId, String genreName) {
         Optional<Book> optionalBook = bookRepository.findById(id);
         if (optionalBook.isPresent()) {
             Book updateBook = optionalBook.get();
+            Author author = authorService.getById(authorId);
             updateBook.setBookName(bookName);
-            updateBook.setAuthor(new Author(authorName));
+            updateBook.setAuthor(author);
             updateBook.setGenre(new Genre(genreName));
             bookRepository.save(updateBook);
             return StringUtils.BOOK_UPDATED_RESPONSE;
@@ -88,7 +95,7 @@ public class BookServiceImpl implements BookService {
 
     private String getBookInfo(Book book) {
         return "id = " + book.getId() + ", name = " + book.getBookName() +
-                ", author = " + book.getAuthor().getAuthorName() +
+                ", author = " + book.getAuthor().getAuthorName() + " " + book.getAuthor().getAuthorSurname() +
                 ", genre = " + book.getGenre().getGenreName();
     }
 

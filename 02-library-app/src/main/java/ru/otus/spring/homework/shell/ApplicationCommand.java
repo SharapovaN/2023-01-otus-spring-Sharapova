@@ -32,13 +32,13 @@ public class ApplicationCommand {
     }
 
     @ShellMethod(value = "Create book command", key = {"cb", "create book"})
-    public String createBook(String bookName, String authorName, String genreName) {
-        return bookService.create(bookName, authorName, genreName);
+    public String createBook(String bookName, String authorId, String genreName) {
+        return bookService.create(bookName, authorId, genreName);
     }
 
     @ShellMethod(value = "Update book command", key = {"ub", "update book"})
-    public String updateBook(String id, String bookId, String authorName, String genreName) {
-        return bookService.update(id, bookId, authorName, genreName);
+    public String updateBook(String id, String bookId, String authorId, String genreName) {
+        return bookService.update(id, bookId, authorId, genreName);
     }
 
     @ShellMethod(value = "Delete book command", key = {"db", "delete book"})
