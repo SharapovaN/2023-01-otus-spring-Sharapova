@@ -8,11 +8,10 @@ import ru.otus.spring.homework.repository.AuthorRepository;
 @AllArgsConstructor
 @Service
 public class AuthorServiceImpl implements AuthorService {
-
     private final AuthorRepository authorRepository;
 
     @Override
-    public Author getById(long id) {
+    public Author getById(String id) {
         return authorRepository.findById(id).orElse(null);
     }
 }

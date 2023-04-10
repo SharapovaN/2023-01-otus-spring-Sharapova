@@ -1,19 +1,23 @@
 package ru.otus.spring.homework.service;
 
+import ru.otus.spring.homework.model.Book;
+
 import java.util.List;
 
 public interface BookService {
     List<String> getAll();
 
-    String getById(long id);
+    String getById(String id);
 
-    List<String> getCommentsForBook(long id);
+    List<String> getCommentsForBook(String id);
 
-    String create(String bookName, long authorId, long genreId);
+    String create(String bookName, String authorId, String genreName);
 
-    String deleteById(long id);
+    String deleteById(String id);
 
-    String update(long id, String bookName, long authorId, long genreId);
+    String update(String id, String bookName, String authorId, String genreName);
 
-    boolean checkBookExists(long id);
+    boolean checkBookExists(String id);
+
+    Book getBookById(String id);
 }

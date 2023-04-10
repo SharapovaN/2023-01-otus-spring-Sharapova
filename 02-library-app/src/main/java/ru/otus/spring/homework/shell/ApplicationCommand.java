@@ -17,12 +17,12 @@ public class ApplicationCommand {
     private final CommentService commentService;
 
     @ShellMethod(value = "Get book command", key = {"gb", "get book"})
-    public String getBook(long id) {
+    public String getBook(String id) {
         return bookService.getById(id);
     }
 
-    @ShellMethod(value = "Get book comments command", key = {"gcb", "get book comments"})
-    public List<String> getCommentsForBook(long id) {
+    @ShellMethod(value = "Get book comments command", key = {"gbc", "get book comments"})
+    public List<String> getCommentsForBook(String id) {
         return bookService.getCommentsForBook(id);
     }
 
@@ -32,22 +32,22 @@ public class ApplicationCommand {
     }
 
     @ShellMethod(value = "Create book command", key = {"cb", "create book"})
-    public String createBook(String bookName, long authorId, long genreId) {
-        return bookService.create(bookName, authorId, genreId);
+    public String createBook(String bookName, String authorId, String genreName) {
+        return bookService.create(bookName, authorId, genreName);
     }
 
     @ShellMethod(value = "Update book command", key = {"ub", "update book"})
-    public String updateBook(long id, String bookName, long authorId, long genreId) {
-        return bookService.update(id, bookName, authorId, genreId);
+    public String updateBook(String id, String bookId, String authorId, String genreName) {
+        return bookService.update(id, bookId, authorId, genreName);
     }
 
     @ShellMethod(value = "Delete book command", key = {"db", "delete book"})
-    public String deleteBook(long id) {
+    public String deleteBook(String id) {
         return bookService.deleteById(id);
     }
 
     @ShellMethod(value = "Get comment command", key = {"gc", "get comment"})
-    public String getComment(long id) {
+    public String getComment(String id) {
         return commentService.getById(id);
     }
 
@@ -57,17 +57,17 @@ public class ApplicationCommand {
     }
 
     @ShellMethod(value = "Create comment command", key = {"cc", "create comment"})
-    public String createComment(long bookId, String comment) {
+    public String createComment(String bookId, String comment) {
         return commentService.create(bookId, comment);
     }
 
     @ShellMethod(value = "Update comment command", key = {"uc", "update comment"})
-    public String updateComment(long id, long bookId, String comment) {
+    public String updateComment(String id, String bookId, String comment) {
         return commentService.update(id, bookId, comment);
     }
 
     @ShellMethod(value = "Delete comment command", key = {"dc", "delete comment"})
-    public String deleteComment(long id) {
+    public String deleteComment(String id) {
         return commentService.deleteById(id);
     }
 
