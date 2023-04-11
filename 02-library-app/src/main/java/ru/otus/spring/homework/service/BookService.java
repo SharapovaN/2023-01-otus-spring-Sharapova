@@ -1,19 +1,24 @@
 package ru.otus.spring.homework.service;
 
+import ru.otus.spring.homework.model.dto.BookDto;
+import ru.otus.spring.homework.model.dto.SaveBookDto;
+
 import java.util.List;
 
 public interface BookService {
-    List<String> getAll();
+    List<BookDto> getAll();
 
-    String getById(long id);
+    BookDto getById(long id);
 
-    List<String> getCommentsForBook(long id);
+    SaveBookDto getSaveBookDtoById(long id);
 
-    String create(String bookName, long authorId, long genreId);
+    BookDto getCommentsForBook(long id);
 
-    String deleteById(long id);
+    void create(SaveBookDto book);
 
-    String update(long id, String bookName, long authorId, long genreId);
+    void deleteById(long id);
+
+    void update(SaveBookDto book);
 
     boolean checkBookExists(long id);
 }

@@ -2,8 +2,7 @@ package ru.otus.spring.homework.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ru.otus.spring.homework.model.Comment;
+import ru.otus.spring.homework.model.entity.Comment;
 import ru.otus.spring.homework.repository.CommentRepository;
 import ru.otus.spring.homework.utils.StringUtils;
 

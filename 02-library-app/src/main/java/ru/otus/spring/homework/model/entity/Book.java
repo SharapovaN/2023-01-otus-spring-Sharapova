@@ -1,4 +1,4 @@
-package ru.otus.spring.homework.model;
+package ru.otus.spring.homework.model.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
