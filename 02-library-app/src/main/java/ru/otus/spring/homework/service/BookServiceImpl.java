@@ -48,11 +48,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void create(SaveBookDto bookDto) {
+    public Book create(SaveBookDto bookDto) {
         Book book = new Book(bookDto.getName());
         book.setAuthor(authorService.getById(bookDto.getAuthorId()));
         book.setGenre(genreService.getById(bookDto.getGenreId()));
-        bookRepository.save(book);
+        return bookRepository.save(book);
     }
 
     @Override
@@ -63,15 +63,16 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void update(SaveBookDto bookDto) {
+    public Book update(SaveBookDto bookDto) {
         Optional<Book> optionalBook = bookRepository.findById(bookDto.getId());
         if (optionalBook.isPresent()) {
             Book updateBook = optionalBook.get();
             updateBook.setBookName(bookDto.getName());
             updateBook.setAuthor(authorService.getById(bookDto.getAuthorId()));
             updateBook.setGenre(genreService.getById(bookDto.getGenreId()));
-            bookRepository.save(updateBook);
+            return bookRepository.save(updateBook);
         }
+        return null;
     }
 
     @Override

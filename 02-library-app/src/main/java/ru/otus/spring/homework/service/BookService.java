@@ -2,6 +2,7 @@ package ru.otus.spring.homework.service;
 
 import ru.otus.spring.homework.model.dto.BookDto;
 import ru.otus.spring.homework.model.dto.SaveBookDto;
+import ru.otus.spring.homework.model.entity.Book;
 
 import java.util.List;
 
@@ -14,11 +15,11 @@ public interface BookService {
 
     BookDto getCommentsForBook(long id);
 
-    void create(SaveBookDto book);
+    Book create(SaveBookDto book);
 
     void deleteById(long id);
 
-    void update(SaveBookDto book);
+    Book update(SaveBookDto book);
 
     boolean checkBookExists(long id);
 }

@@ -6,9 +6,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.otus.spring.homework.model.Author;
-import ru.otus.spring.homework.model.Book;
-import ru.otus.spring.homework.model.Genre;
+import ru.otus.spring.homework.exception.BookNotFoundException;
+import ru.otus.spring.homework.model.dto.BookDto;
+import ru.otus.spring.homework.model.dto.SaveBookDto;
+import ru.otus.spring.homework.model.entity.Author;
+import ru.otus.spring.homework.model.entity.Book;
+import ru.otus.spring.homework.model.entity.Genre;
 import ru.otus.spring.homework.repository.BookRepository;
 
 import java.util.ArrayList;
@@ -36,15 +39,15 @@ class BookServiceImplTest {
     void getByIdIfBookExistsTest() {
         given(bookRepository.findById(1L)).willReturn(Optional.of(new Book(1, "bookName",
                 new Author(1, "name", "surname"), new Genre(1, "genre"), null)));
-        String book = bookService.getById(1);
-        Assertions.assertTrue(book.contains("name"));
+        BookDto book = bookService.getById(1);
+        Assertions.assertNotNull(book);
+        Assertions.assertEquals("bookName", book.getName());
     }
 
     @Test
     void getByIdIfBookNotExistsTest() {
         given(bookRepository.findById(1L)).willReturn(Optional.empty());
-        String book = bookService.getById(1);
-        Assertions.assertTrue(book.contains("not found"));
+        Assertions.assertThrows(BookNotFoundException.class, () -> bookService.getById(1));
     }
 
     @Test
@@ -67,26 +70,20 @@ class BookServiceImplTest {
         Book newBook = new Book("name");
         newBook.setGenre(new Genre(1));
         newBook.setAuthor(new Author(1));
+
         given(bookRepository.save(newBook))
                 .willReturn(new Book(3, "name"));
         given(authorService.getById(1)).willReturn(new Author(1));
         given(genreService.getById(1)).willReturn(new Genre(1));
-        String book = bookService.create("name", 1, 1);
-        Assertions.assertTrue(book.contains("Book successfully created"));
-    }
 
-    @Test
-    void deleteByIdIfBookExistTest() {
-        given(bookRepository.existsById(1L)).willReturn(true);
-        String book = bookService.deleteById(1);
-        Assertions.assertTrue(book.contains("Book successfully deleted"));
-    }
+        SaveBookDto bookDto = new SaveBookDto();
+        bookDto.setName("name");
+        bookDto.setAuthorId(1L);
+        bookDto.setGenreId(1L);
 
-    @Test
-    void deleteByIdIfBookNotExistTest() {
-        given(bookRepository.existsById(1L)).willReturn(false);
-        String book = bookService.deleteById(1);
-        Assertions.assertTrue(book.contains("Book delete failed"));
+        Book book = bookService.create(bookDto);
+        Assertions.assertEquals("name", book.getBookName());
+        Assertions.assertNotNull(book);
     }
 
     @Test
@@ -94,19 +91,35 @@ class BookServiceImplTest {
         Book bookToUpdate = new Book(1, "bookName3");
         bookToUpdate.setGenre(new Genre(2));
         bookToUpdate.setAuthor(new Author(2));
+
         given(bookRepository.save(bookToUpdate))
                 .willReturn(new Book(1, "bookName3"));
         given(authorService.getById(2)).willReturn(new Author(2));
         given(genreService.getById(2)).willReturn(new Genre(2));
         given(bookRepository.findById(1L)).willReturn(Optional.of(bookToUpdate));
-        String book = bookService.update(1, "bookName3", 2, 2);
-        Assertions.assertTrue(book.contains("Book successfully updated"));
+
+        SaveBookDto bookDto = new SaveBookDto();
+        bookDto.setId(1L);
+        bookDto.setName("bookName3");
+        bookDto.setAuthorId(2L);
+        bookDto.setGenreId(2L);
+
+        Book book = bookService.update(bookDto);
+        Assertions.assertEquals("bookName3", book.getBookName());
+        Assertions.assertNotNull(book);
     }
 
     @Test
     void updateIfBookNotExistTest() {
-        given(bookRepository.findById(3L)).willReturn(Optional.empty());
-        String book = bookService.update(3, "bookName3", 2, 2);
-        Assertions.assertTrue(book.contains("Book update failed"));
+        given(bookRepository.findById(1L)).willReturn(Optional.empty());
+
+        SaveBookDto bookDto = new SaveBookDto();
+        bookDto.setId(1L);
+        bookDto.setName("bookName3");
+        bookDto.setAuthorId(2L);
+        bookDto.setGenreId(2L);
+
+        Book book = bookService.update(bookDto);
+        Assertions.assertNull(book);
     }
 }
