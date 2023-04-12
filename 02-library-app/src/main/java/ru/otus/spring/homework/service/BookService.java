@@ -9,7 +9,9 @@ import java.util.List;
 public interface BookService {
     List<BookDto> getAll();
 
-    BookDto getById(long id);
+    BookDto getBookDtoById(long id);
+
+    Book getById(long id);
 
     SaveBookDto getSaveBookDtoById(long id);
 

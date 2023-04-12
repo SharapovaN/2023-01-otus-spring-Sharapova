@@ -54,7 +54,7 @@ class BookControllerTest {
         mvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-                .andExpect(view().name("list"))
+                .andExpect(view().name("books"))
                 .andExpect(model().attribute("books", hasSize(2)));
     }
 
@@ -62,7 +62,7 @@ class BookControllerTest {
     void getBookTest() throws Exception {
         BookDto bookDto = new BookDto(1, "bookName", "authorName", "genreName", null);
 
-        given(bookService.getById(1)).willReturn(bookDto);
+        given(bookService.getBookDtoById(1)).willReturn(bookDto);
 
         mvc.perform(get("/book/1"))
                 .andExpect(status().isOk())

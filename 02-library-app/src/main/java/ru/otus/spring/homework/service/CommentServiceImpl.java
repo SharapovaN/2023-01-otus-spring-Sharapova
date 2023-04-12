@@ -31,9 +31,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public List<CommentDto> getByBookId(long id) {
+        return commentRepository.findByBookId(id).stream().map(ModelConverter::toCommentDto).toList();
+    }
+
+    @Override
     public Comment create(CommentDto comment) {
         if (bookService.checkBookExists(comment.getBookId())) {
-            return commentRepository.save(new Comment(comment.getBookId(), comment.getComment()));
+            return commentRepository.save(new Comment(bookService.getById(comment.getBookId()), comment.getComment()));
         }
         throw new BookNotFoundException(comment.getBookId());
     }
@@ -52,7 +57,7 @@ public class CommentServiceImpl implements CommentService {
         Optional<Comment> optionalComment = commentRepository.findById(comment.getId());
         if (optionalComment.isPresent()) {
             Comment updateComment = optionalComment.get();
-            updateComment.setBookId(comment.getBookId());
+            updateComment.setBook(bookService.getById(comment.getBookId()));
             updateComment.setComment(comment.getComment());
             return commentRepository.save(updateComment);
         }

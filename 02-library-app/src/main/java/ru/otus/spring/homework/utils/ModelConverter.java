@@ -50,7 +50,8 @@ public class ModelConverter {
         CommentDto dto = new CommentDto();
 
         dto.setId(comment.getId());
-        dto.setBookId(comment.getBookId());
+        dto.setBookId(comment.getBook().getId());
+        dto.setBookName(comment.getBook().getBookName());
         dto.setComment(comment.getComment());
 
         return dto;

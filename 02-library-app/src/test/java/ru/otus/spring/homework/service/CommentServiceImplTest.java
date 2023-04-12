@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.spring.homework.exception.BookNotFoundException;
 import ru.otus.spring.homework.exception.CommentNotFoundException;
 import ru.otus.spring.homework.model.dto.CommentDto;
+import ru.otus.spring.homework.model.entity.Book;
 import ru.otus.spring.homework.model.entity.Comment;
 import ru.otus.spring.homework.repository.CommentRepository;
 
@@ -33,8 +34,8 @@ class CommentServiceImplTest {
     @Test
     void getAllCommentsTest() {
         List<Comment> comments = new ArrayList<>();
-        comments.add(new Comment(1, 1, "comment1"));
-        comments.add(new Comment(2, 1, "comment2"));
+        comments.add(new Comment(1, new Book(1), "comment1"));
+        comments.add(new Comment(2, new Book(1), "comment2"));
         given(commentRepository.findAll()).willReturn(comments);
         List<CommentDto> commentList = commentService.getAll();
         Assertions.assertEquals(2, commentList.size());
@@ -42,7 +43,7 @@ class CommentServiceImplTest {
 
     @Test
     void getByIdIfExistsTest() {
-        given(commentRepository.findById(1L)).willReturn(Optional.of(new Comment(1, 1, "comment1")));
+        given(commentRepository.findById(1L)).willReturn(Optional.of(new Comment(1, new Book(1), "comment1")));
         CommentDto comment = commentService.getById(1);
         Assertions.assertEquals("comment1", comment.getComment());
     }
@@ -55,8 +56,8 @@ class CommentServiceImplTest {
 
     @Test
     void createIfOkTest() {
-        given(commentRepository.save(new Comment(1, "comment1")))
-                .willReturn(new Comment(1, "comment1"));
+        given(commentRepository.save(new Comment(1, new Book(1), "comment1")))
+                .willReturn(new Comment(1, new Book(1),"comment1"));
         given(bookService.checkBookExists(1)).willReturn(true);
 
         CommentDto commentDto = new CommentDto();
@@ -87,9 +88,9 @@ class CommentServiceImplTest {
 
     @Test
     void updateIfCommentExistTest() {
-        given(commentRepository.save(new Comment(1, 1, "newComment")))
-                .willReturn(new Comment(1, 1, "newComment"));
-        given(commentRepository.findById(1L)).willReturn(Optional.of(new Comment(1, 1, "newComment")));
+        given(commentRepository.save(new Comment(1, new Book(1), "newComment")))
+                .willReturn(new Comment(1, new Book(1), "newComment"));
+        given(commentRepository.findById(1L)).willReturn(Optional.of(new Comment(1, new Book(1), "newComment")));
 
         CommentDto commentDto = new CommentDto();
         commentDto.setId(1L);
@@ -111,5 +112,18 @@ class CommentServiceImplTest {
         commentDto.setComment("comment1");
 
         Assertions.assertThrows(CommentNotFoundException.class, () -> commentService.update(commentDto));
+    }
+
+    @Test
+    void getByBookId() {
+        List<Comment> comments = new ArrayList<>();
+        comments.add(new Comment(1, new Book(1), "comment1"));
+        comments.add(new Comment(2, new Book(1), "comment2"));
+
+        given(commentRepository.findByBookId(1)).willReturn(comments);
+        List<CommentDto> commentDtos = commentService.getByBookId(1);
+
+        Assertions.assertEquals(2, commentDtos.size());
+        Assertions.assertEquals("comment1", commentDtos.get(0).getComment());
     }
 }

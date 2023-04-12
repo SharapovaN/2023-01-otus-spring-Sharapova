@@ -39,7 +39,7 @@ class BookServiceImplTest {
     void getByIdIfBookExistsTest() {
         given(bookRepository.findById(1L)).willReturn(Optional.of(new Book(1, "bookName",
                 new Author(1, "name", "surname"), new Genre(1, "genre"), null)));
-        BookDto book = bookService.getById(1);
+        BookDto book = bookService.getBookDtoById(1);
         Assertions.assertNotNull(book);
         Assertions.assertEquals("bookName", book.getName());
     }
@@ -47,7 +47,7 @@ class BookServiceImplTest {
     @Test
     void getByIdIfBookNotExistsTest() {
         given(bookRepository.findById(1L)).willReturn(Optional.empty());
-        Assertions.assertThrows(BookNotFoundException.class, () -> bookService.getById(1));
+        Assertions.assertThrows(BookNotFoundException.class, () -> bookService.getBookDtoById(1));
     }
 
     @Test

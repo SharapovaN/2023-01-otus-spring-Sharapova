@@ -27,9 +27,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto getById(long id) {
+    public BookDto getBookDtoById(long id) {
         return bookRepository.findById(id).map(ModelConverter::toBookDto)
                 .orElseThrow(() -> new BookNotFoundException(id));
+    }
+
+    @Override
+    public Book getById(long id) {
+        return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
     }
 
     @Override

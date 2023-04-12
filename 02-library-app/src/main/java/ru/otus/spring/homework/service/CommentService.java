@@ -10,6 +10,8 @@ public interface CommentService {
 
     CommentDto getById(long id);
 
+    List<CommentDto> getByBookId(long id);
+
     Comment create(CommentDto comment);
 
     void deleteById(long id);

@@ -29,12 +29,12 @@ public class BookController {
     public String getAllBooks(Model model) {
         List<BookDto> books = bookService.getAll();
         model.addAttribute("books", books);
-        return "list";
+        return "books";
     }
 
     @GetMapping("/book/{id}")
     public String getBook(@PathVariable("id") Long id, Model model) {
-        BookDto book = bookService.getById(id);
+        BookDto book = bookService.getBookDtoById(id);
         model.addAttribute("book", book);
         return "book";
     }
