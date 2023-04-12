@@ -1,38 +1,37 @@
 package ru.otus.spring.homework.model.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Document
+@Entity
+@Table(name = "comments")
 public class Comment {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-    private Book book;
+    @Column(name = "book_id")
+    private long bookId;
 
+    @Column(name = "comment")
     private String comment;
 
-    public Comment(Book book, String comment) {
-        this.book = book;
+    public Comment(long bookId, String comment) {
+        this.bookId = bookId;
         this.comment = comment;
     }
 
-    public Comment(String id) {
+    public Comment(long id) {
         this.id = id;
-    }
-
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "id = '" + id + '\'' +
-                ", book = " + book.getBookName() +
-                ", comment = '" + comment + '\'' +
-                '}';
     }
 }

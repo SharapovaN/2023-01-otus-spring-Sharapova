@@ -10,10 +10,11 @@ import java.util.List;
 @AllArgsConstructor
 @Service
 public class AuthorServiceImpl implements AuthorService {
+
     private final AuthorRepository authorRepository;
 
     @Override
-    public Author getById(String id) {
+    public Author getById(long id) {
         return authorRepository.findById(id).orElse(null);
     }
 
