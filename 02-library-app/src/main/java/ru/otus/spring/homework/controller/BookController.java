@@ -34,9 +34,9 @@ public class BookController {
 
     @GetMapping("/book/{id}")
     public String getBook(@PathVariable("id") Long id, Model model) {
-        BookDto book = bookService.getBookDtoById(id);
-        model.addAttribute("book", book);
-        return "book";
+        List<BookDto> books = List.of(bookService.getBookDtoById(id));
+        model.addAttribute("books", books);
+        return "books";
     }
 
     @GetMapping("/book-with-comments/{id}")

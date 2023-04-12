@@ -32,9 +32,6 @@ class BookControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    @Autowired
-    private ObjectMapper mapper;
-
     @MockBean
     private BookService bookService;
 
@@ -67,8 +64,8 @@ class BookControllerTest {
         mvc.perform(get("/book/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-                .andExpect(view().name("book"))
-                .andExpect(model().attribute("book", bookDto));
+                .andExpect(view().name("books"))
+                .andExpect(model().attribute("books", List.of(bookDto)));
     }
 
     @Test

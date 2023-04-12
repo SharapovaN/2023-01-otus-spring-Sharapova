@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.spring.homework.model.dto.CommentDto;
@@ -24,8 +25,8 @@ public class CommentController {
         return "comments";
     }
 
-    @GetMapping("/comment")
-    public String getComment(@RequestParam("id") long id, Model model) {
+    @GetMapping("/comment/{id}")
+    public String getComment(@PathVariable("id") long id, Model model) {
         List<CommentDto> comments = List.of(commentService.getById(id));
         model.addAttribute("comments", comments);
         return "comments";
@@ -39,7 +40,7 @@ public class CommentController {
     }
 
     @GetMapping("/create-comment")
-    public String getCreatePge(@RequestParam("bookId") long bookId, Model model) {
+    public String getCreatePage(@RequestParam("bookId") long bookId, Model model) {
         CommentDto comment = new CommentDto();
         comment.setBookId(bookId);
         model.addAttribute("comment", comment);
@@ -47,7 +48,7 @@ public class CommentController {
     }
 
     @GetMapping("/edit-comment")
-    public String getEditPge(@RequestParam("id") long id, Model model) {
+    public String getEditPage(@RequestParam("id") long id, Model model) {
         CommentDto comment = commentService.getById(id);
         model.addAttribute("comment", comment);
         return "edit-comment";
