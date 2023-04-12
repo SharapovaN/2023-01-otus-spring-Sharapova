@@ -119,7 +119,12 @@ class BookServiceImplTest {
         bookDto.setAuthorId(2L);
         bookDto.setGenreId(2L);
 
-        Book book = bookService.update(bookDto);
-        Assertions.assertNull(book);
+        Assertions.assertThrows(BookNotFoundException.class, () -> bookService.update(bookDto));
+    }
+
+    @Test
+    void deleteIfNotOkTest() {
+        given(bookService.checkBookExists(1L)).willReturn(false);
+        Assertions.assertThrows(BookNotFoundException.class, () -> bookService.deleteById(1));
     }
 }

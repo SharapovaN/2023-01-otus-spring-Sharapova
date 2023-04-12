@@ -6,6 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.otus.spring.homework.exception.BookNotFoundException;
+import ru.otus.spring.homework.exception.CommentNotFoundException;
+import ru.otus.spring.homework.model.dto.CommentDto;
 import ru.otus.spring.homework.model.entity.Comment;
 import ru.otus.spring.homework.repository.CommentRepository;
 
@@ -33,22 +36,21 @@ class CommentServiceImplTest {
         comments.add(new Comment(1, 1, "comment1"));
         comments.add(new Comment(2, 1, "comment2"));
         given(commentRepository.findAll()).willReturn(comments);
-        List<String> commentList = commentService.getAll();
+        List<CommentDto> commentList = commentService.getAll();
         Assertions.assertEquals(2, commentList.size());
     }
 
     @Test
     void getByIdIfExistsTest() {
         given(commentRepository.findById(1L)).willReturn(Optional.of(new Comment(1, 1, "comment1")));
-        String comment = commentService.getById(1);
-        Assertions.assertTrue(comment.contains("comment1"));
+        CommentDto comment = commentService.getById(1);
+        Assertions.assertEquals("comment1", comment.getComment());
     }
 
     @Test
     void getByIdIfNotExistsTest() {
         given(commentRepository.findById(1L)).willReturn(Optional.empty());
-        String comment = commentService.getById(1);
-        Assertions.assertTrue(comment.contains("not found"));
+        Assertions.assertThrows(CommentNotFoundException.class, () -> commentService.getById(1));
     }
 
     @Test
@@ -56,29 +58,31 @@ class CommentServiceImplTest {
         given(commentRepository.save(new Comment(1, "comment1")))
                 .willReturn(new Comment(1, "comment1"));
         given(bookService.checkBookExists(1)).willReturn(true);
-        String comment = commentService.create(1, "comment1");
-        Assertions.assertTrue(comment.contains("Comment successfully created"));
+
+        CommentDto commentDto = new CommentDto();
+        commentDto.setBookId(1L);
+        commentDto.setComment("comment1");
+
+        Comment comment = commentService.create(commentDto);
+        Assertions.assertNotNull(comment);
+        Assertions.assertEquals("comment1", comment.getComment());
     }
 
     @Test
     void createIfBookNotExistsTest() {
         given(bookService.checkBookExists(3)).willReturn(false);
-        String comment = commentService.create(3, "comment1");
-        Assertions.assertTrue(comment.contains("Comment creation failed"));
-    }
 
-    @Test
-    void deleteByIdIfCommentExistTest() {
-        given(commentRepository.findById(1L)).willReturn(Optional.of(new Comment(1)));
-        String comment = commentService.deleteById(1);
-        Assertions.assertTrue(comment.contains("Comment successfully deleted"));
+        CommentDto commentDto = new CommentDto();
+        commentDto.setBookId(3L);
+        commentDto.setComment("comment1");
+
+        Assertions.assertThrows(BookNotFoundException.class, () -> commentService.create(commentDto));
     }
 
     @Test
     void deleteByIdIfCommentNotExistTest() {
         given(commentRepository.findById(1L)).willReturn(Optional.empty());
-        String comment = commentService.deleteById(1);
-        Assertions.assertTrue(comment.contains("Comment delete failed"));
+        Assertions.assertThrows(CommentNotFoundException.class, () -> commentService.deleteById(1));
     }
 
     @Test
@@ -86,14 +90,26 @@ class CommentServiceImplTest {
         given(commentRepository.save(new Comment(1, 1, "newComment")))
                 .willReturn(new Comment(1, 1, "newComment"));
         given(commentRepository.findById(1L)).willReturn(Optional.of(new Comment(1, 1, "newComment")));
-        String comment = commentService.update(1, 1, "newComment");
-        Assertions.assertTrue(comment.contains("Comment successfully updated"));
+
+        CommentDto commentDto = new CommentDto();
+        commentDto.setId(1L);
+        commentDto.setBookId(1L);
+        commentDto.setComment("newComment");
+
+        Comment comment = commentService.update(commentDto);
+        Assertions.assertNotNull(comment);
+        Assertions.assertEquals("newComment", comment.getComment());
     }
 
     @Test
     void updateIfCommentNotExistTest() {
         given(commentRepository.findById(1L)).willReturn(Optional.empty());
-        String comment = commentService.update(1, 1, "newComment");
-        Assertions.assertTrue(comment.contains("Comment update failed"));
+
+        CommentDto commentDto = new CommentDto();
+        commentDto.setId(1L);
+        commentDto.setBookId(1L);
+        commentDto.setComment("comment1");
+
+        Assertions.assertThrows(CommentNotFoundException.class, () -> commentService.update(commentDto));
     }
 }

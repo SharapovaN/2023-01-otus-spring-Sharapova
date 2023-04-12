@@ -13,7 +13,7 @@ public interface BookService {
 
     SaveBookDto getSaveBookDtoById(long id);
 
-    BookDto getCommentsForBook(long id);
+    BookDto getBookWithComments(long id);
 
     Book create(SaveBookDto book);
 

@@ -9,7 +9,6 @@ import ru.otus.spring.homework.model.dto.SaveBookDto;
 import ru.otus.spring.homework.model.entity.Book;
 import ru.otus.spring.homework.repository.BookRepository;
 import ru.otus.spring.homework.utils.ModelConverter;
-import ru.otus.spring.homework.utils.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +40,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional(readOnly = true)
-    public BookDto getCommentsForBook(long id) {
+    public BookDto getBookWithComments(long id) {
         Optional<Book> optionalBook = bookRepository.findById(id);
         return optionalBook.map(ModelConverter::toBookWithCommentsDto)
                 .orElseThrow(() -> new BookNotFoundException(id));
@@ -59,6 +58,8 @@ public class BookServiceImpl implements BookService {
     public void deleteById(long id) {
         if (checkBookExists(id)) {
             bookRepository.delete(new Book(id));
+        } else {
+            throw new BookNotFoundException(id);
         }
     }
 
@@ -72,7 +73,7 @@ public class BookServiceImpl implements BookService {
             updateBook.setGenre(genreService.getById(bookDto.getGenreId()));
             return bookRepository.save(updateBook);
         }
-        return null;
+        throw new BookNotFoundException(bookDto.getId());
     }
 
     @Override

@@ -1,6 +1,7 @@
 package ru.otus.spring.homework.utils;
 
 import ru.otus.spring.homework.model.dto.BookDto;
+import ru.otus.spring.homework.model.dto.CommentDto;
 import ru.otus.spring.homework.model.dto.SaveBookDto;
 import ru.otus.spring.homework.model.entity.Book;
 import ru.otus.spring.homework.model.entity.Comment;
@@ -42,6 +43,16 @@ public class ModelConverter {
         dto.setGenre(book.getGenre().getGenreName());
         dto.setAuthorId(book.getAuthor().getId());
         dto.setGenreId(book.getGenre().getId());
+        return dto;
+    }
+
+    public static CommentDto toCommentDto(Comment comment) {
+        CommentDto dto = new CommentDto();
+
+        dto.setId(comment.getId());
+        dto.setBookId(comment.getBookId());
+        dto.setComment(comment.getComment());
+
         return dto;
     }
 

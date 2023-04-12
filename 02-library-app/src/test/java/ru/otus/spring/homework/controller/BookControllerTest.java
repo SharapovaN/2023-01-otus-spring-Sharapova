@@ -76,7 +76,7 @@ class BookControllerTest {
         List<String> comments = List.of("comment", "comment1");
         BookDto bookDto = new BookDto(1, "bookName", "authorName", "genreName", comments);
 
-        given(bookService.getCommentsForBook(1)).willReturn(bookDto);
+        given(bookService.getBookWithComments(1)).willReturn(bookDto);
 
         mvc.perform(get("/book-with-comments/1"))
                 .andExpect(status().isOk())
