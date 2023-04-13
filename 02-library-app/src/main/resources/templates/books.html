@@ -32,7 +32,7 @@
         <th>Genre</th>
         <th>Edit book</th>
         <th>Delete book</th>
-        <th>Comments</th>
+        <th colspan="2">Comments</th>
     </tr>
     </thead>
     <tbody>
@@ -49,6 +49,9 @@
         </td>
         <td>
             <a href="comments.html" th:href="@{/book/comments(bookId=${book.id})}">Show comments</a>
+        </td>
+        <td>
+            <a href="create-comment.html" th:href="@{/comment/create(bookId=${book.id})}">Create new comment</a>
         </td>
     </tr>
     </tbody>
