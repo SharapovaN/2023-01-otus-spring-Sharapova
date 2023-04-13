@@ -32,14 +32,14 @@ public class CommentController {
         return "comments";
     }
 
-    @GetMapping("/book-comments")
+    @GetMapping("/book/comments")
     public String getBookComments(@RequestParam("bookId") long bookId, Model model) {
         List<CommentDto> comments = commentService.getByBookId(bookId);
         model.addAttribute("comments", comments);
         return "comments";
     }
 
-    @GetMapping("/create-comment")
+    @GetMapping("/comment/create")
     public String getCreatePage(@RequestParam("bookId") long bookId, Model model) {
         CommentDto comment = new CommentDto();
         comment.setBookId(bookId);
@@ -47,26 +47,26 @@ public class CommentController {
         return "create-comment";
     }
 
-    @GetMapping("/edit-comment")
+    @GetMapping("/comment/edit")
     public String getEditPage(@RequestParam("id") long id, Model model) {
         CommentDto comment = commentService.getById(id);
         model.addAttribute("comment", comment);
         return "edit-comment";
     }
 
-    @GetMapping("/delete-comment")
+    @GetMapping("/comment/delete")
     public String deleteComment(@RequestParam("id") long id) {
         commentService.deleteById(id);
         return "redirect:/comments";
     }
 
-    @PostMapping("/create-comment")
+    @PostMapping("/comment/create")
     public String createComment(CommentDto commentDto) {
         commentService.create(commentDto);
         return "redirect:/comments";
     }
 
-    @PostMapping("/edit-comment")
+    @PostMapping("/comment/edit")
     public String editComment(CommentDto commentDto) {
         commentService.update(commentDto);
         return "redirect:/comments";

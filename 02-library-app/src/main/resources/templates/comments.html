@@ -39,16 +39,16 @@
         <td th:text="${comment.bookName}">Book Name</td>
         <td th:text="${comment.comment}">Comment</td>
         <td>
-            <a href="edit-comment.html" th:href="@{/edit-comment(id=${comment.id})}">Edit</a>
+            <a href="edit-comment.html" th:href="@{/comment/edit(id=${comment.id})}">Edit</a>
         </td>
         <td>
-            <a th:href="@{/delete-comment(id=${comment.id})}">Delete</a>
+            <a th:href="@{/comment/delete(id=${comment.id})}">Delete</a>
         </td>
     </tr>
     </tbody>
 </table>
 <br>
-<a href="create-comment.html" th:href="@{/create-comment(bookId=${comments[0].bookId})}">Create new comment for book</a>
+<a href="create-comment.html" th:href="@{/comment/create(bookId=${comments[0].bookId})}">Create new comment for book</a>
 
 </body>
 </html>

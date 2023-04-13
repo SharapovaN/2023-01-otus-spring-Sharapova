@@ -63,7 +63,7 @@ class CommentControllerTest {
 
         given(commentService.getByBookId(1)).willReturn(comments);
 
-        mvc.perform(get("/book-comments?bookId=1"))
+        mvc.perform(get("/book/comments?bookId=1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("comments"))
@@ -72,7 +72,7 @@ class CommentControllerTest {
 
     @Test
     void getCreatePageTest() throws Exception {
-        mvc.perform(get("/create-comment?bookId=1"))
+        mvc.perform(get("/comment/create?bookId=1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("create-comment"));
@@ -84,7 +84,7 @@ class CommentControllerTest {
 
         given(commentService.getById(1)).willReturn(comment);
 
-        mvc.perform(get("/edit-comment?id=1"))
+        mvc.perform(get("/comment/edit?id=1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("edit-comment"));
@@ -92,21 +92,21 @@ class CommentControllerTest {
 
     @Test
     void deleteCommentTest() throws Exception {
-        mvc.perform(get("/delete-comment?id=1"))
+        mvc.perform(get("/comment/delete?id=1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/comments"));
     }
 
     @Test
     void createCommentTest() throws Exception {
-        mvc.perform(post("/create-comment"))
+        mvc.perform(post("/comment/create"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/comments"));
     }
 
     @Test
     void editCommentTest() throws Exception {
-        mvc.perform(post("/edit-comment"))
+        mvc.perform(post("/comment/edit"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/comments"));
     }
