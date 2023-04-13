@@ -58,7 +58,7 @@ class CommentServiceImplTest {
     void createIfOkTest() {
         Book book = new Book(1);
         given(commentRepository.save(new Comment(book, "comment1")))
-                .willReturn(new Comment(1, book,"comment1"));
+                .willReturn(new Comment(1, book, "comment1"));
         given(bookService.checkBookExists(1)).willReturn(true);
         given(bookService.getById(1)).willReturn(book);
 

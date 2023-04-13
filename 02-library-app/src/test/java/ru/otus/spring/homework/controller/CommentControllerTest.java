@@ -7,8 +7,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.spring.homework.model.dto.CommentDto;
-import ru.otus.spring.homework.model.entity.Book;
-import ru.otus.spring.homework.model.entity.Comment;
 import ru.otus.spring.homework.service.CommentService;
 
 import java.util.List;
