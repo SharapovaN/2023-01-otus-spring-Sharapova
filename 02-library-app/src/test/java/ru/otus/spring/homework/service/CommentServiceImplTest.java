@@ -56,9 +56,11 @@ class CommentServiceImplTest {
 
     @Test
     void createIfOkTest() {
-        given(commentRepository.save(new Comment(1, new Book(1), "comment1")))
-                .willReturn(new Comment(1, new Book(1),"comment1"));
+        Book book = new Book(1);
+        given(commentRepository.save(new Comment(book, "comment1")))
+                .willReturn(new Comment(1, book,"comment1"));
         given(bookService.checkBookExists(1)).willReturn(true);
+        given(bookService.getById(1)).willReturn(book);
 
         CommentDto commentDto = new CommentDto();
         commentDto.setBookId(1L);
@@ -91,6 +93,7 @@ class CommentServiceImplTest {
         given(commentRepository.save(new Comment(1, new Book(1), "newComment")))
                 .willReturn(new Comment(1, new Book(1), "newComment"));
         given(commentRepository.findById(1L)).willReturn(Optional.of(new Comment(1, new Book(1), "newComment")));
+        given(bookService.getById(1)).willReturn(new Book(1));
 
         CommentDto commentDto = new CommentDto();
         commentDto.setId(1L);
