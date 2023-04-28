@@ -2,13 +2,13 @@ package ru.otus.spring.homework.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.otus.spring.homework.model.Book;
-import ru.otus.spring.homework.model.Comment;
+import ru.otus.spring.homework.exception.BookNotFoundException;
+import ru.otus.spring.homework.exception.CommentNotFoundException;
+import ru.otus.spring.homework.model.dto.CommentDto;
+import ru.otus.spring.homework.model.entity.Comment;
 import ru.otus.spring.homework.repository.CommentRepository;
-import ru.otus.spring.homework.utils.StringUtils;
+import ru.otus.spring.homework.utils.ModelConverter;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,47 +20,47 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
 
     @Override
-    public List<String> getAll() {
-        List<String> comments = commentRepository.findAll().stream().map(Comment::toString).toList();
-        return comments.size() != 0 ? comments : new ArrayList<>(Collections.singleton(StringUtils.COMMENTS_NOT_FOUND_RESPONSE));
+    public List<CommentDto> getAll() {
+        return commentRepository.findAll().stream().map(ModelConverter::toCommentDto).toList();
     }
 
     @Override
-    public String getById(String id) {
-        Optional<Comment> comment = commentRepository.findById(id);
-        return comment.isPresent() ? comment.get().toString() : StringUtils.COMMENT_NOT_FOUND_RESPONSE;
+    public CommentDto getById(long id) {
+        return commentRepository.findById(id).map(ModelConverter::toCommentDto)
+                .orElseThrow(() -> new CommentNotFoundException(id));
     }
 
     @Override
-    public String create(String bookId, String comment) {
-        if (bookService.checkBookExists(bookId)) {
-            Book book = bookService.getBookById(bookId);
-            Comment savedComment = commentRepository.save(new Comment(null, book, comment));
-            return StringUtils.COMMENT_CREATED_RESPONSE + savedComment.getId();
+    public List<CommentDto> getByBookId(long id) {
+        return commentRepository.findByBookId(id).stream().map(ModelConverter::toCommentDto).toList();
+    }
+
+    @Override
+    public Comment create(CommentDto comment) {
+        if (bookService.checkBookExists(comment.getBookId())) {
+            return commentRepository.save(new Comment(bookService.getById(comment.getBookId()), comment.getComment()));
         }
-        return StringUtils.COMMENT_NOT_CREATED_RESPONSE;
+        throw new BookNotFoundException(comment.getBookId());
     }
 
     @Override
-    public String deleteById(String id) {
+    public void deleteById(long id) {
         if (commentRepository.findById(id).isPresent()) {
             commentRepository.delete(new Comment(id));
-            return StringUtils.COMMENT_DELETE_RESPONSE;
+        } else {
+            throw new CommentNotFoundException(id);
         }
-        return StringUtils.COMMENT_NOT_DELETE_RESPONSE;
     }
 
     @Override
-    public String update(String id, String bookId, String comment) {
-        Optional<Comment> optionalComment = commentRepository.findById(id);
+    public Comment update(CommentDto comment) {
+        Optional<Comment> optionalComment = commentRepository.findById(comment.getId());
         if (optionalComment.isPresent()) {
-            Book book = bookService.getBookById(bookId);
             Comment updateComment = optionalComment.get();
-            updateComment.setBook(book);
-            updateComment.setComment(comment);
-            commentRepository.save(updateComment);
-            return StringUtils.COMMENT_UPDATED_RESPONSE;
+            updateComment.setBook(bookService.getById(comment.getBookId()));
+            updateComment.setComment(comment.getComment());
+            return commentRepository.save(updateComment);
         }
-        return StringUtils.COMMENT_NOT_UPDATED_RESPONSE;
+        throw new CommentNotFoundException(comment.getId());
     }
 }

@@ -2,101 +2,88 @@ package ru.otus.spring.homework.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.otus.spring.homework.model.Author;
-import ru.otus.spring.homework.model.Book;
-import ru.otus.spring.homework.model.Comment;
-import ru.otus.spring.homework.model.Genre;
+import org.springframework.transaction.annotation.Transactional;
+import ru.otus.spring.homework.exception.BookNotFoundException;
+import ru.otus.spring.homework.model.dto.BookDto;
+import ru.otus.spring.homework.model.dto.SaveBookDto;
+import ru.otus.spring.homework.model.entity.Book;
 import ru.otus.spring.homework.repository.BookRepository;
-import ru.otus.spring.homework.utils.StringUtils;
+import ru.otus.spring.homework.utils.ModelConverter;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @AllArgsConstructor
 @Service
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
-
     private final AuthorService authorService;
+    private final GenreService genreService;
 
     @Override
-    public List<String> getAll() {
-        List<String> books = bookRepository.findAll().stream().map(this::getBookInfo).toList();
-        return books.size() != 0 ? books : new ArrayList<>(Collections.singleton(StringUtils.BOOKS_NOT_FOUND_RESPONSE));
+    public List<BookDto> getAll() {
+        return bookRepository.findAll().stream().map(ModelConverter::toBookDto).toList();
     }
 
     @Override
-    public String getById(String id) {
-        Optional<Book> book = bookRepository.findById(id);
-        return book.map(this::getBookInfo).orElse(StringUtils.BOOK_NOT_FOUND_RESPONSE);
+    public BookDto getBookDtoById(long id) {
+        return bookRepository.findById(id).map(ModelConverter::toBookDto)
+                .orElseThrow(() -> new BookNotFoundException(id));
     }
 
     @Override
-    public List<String> getCommentsForBook(String id) {
-        Set<Comment> comments = bookRepository.getBookCommentsById(id);
-        return comments.isEmpty() ? new ArrayList<>(Collections.singleton(StringUtils.COMMENTS_NOT_FOUND_RESPONSE)) :
-                comments.stream().map(Comment::getComment).toList();
+    public Book getById(long id) {
+        return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
     }
 
     @Override
-    public String create(String bookName, String authorId, String genreName) {
-        Author author = authorService.getById(authorId);
-        if (author == null) {
-            return StringUtils.BOOK_NOT_CREATED_RESPONSE + authorId;
-        }
-        Book newBook = new Book(bookName);
-        newBook.setId(null);
-        newBook.setAuthor(author);
-        newBook.setGenre(new Genre(genreName));
-        Book book = bookRepository.save(newBook);
-        return StringUtils.BOOK_CREATED_RESPONSE + book.getId();
+    public SaveBookDto getSaveBookDtoById(long id) {
+        return bookRepository.findById(id).map(ModelConverter::toSaveBookDto)
+                .orElseThrow(() -> new BookNotFoundException(id));
     }
 
     @Override
-    public String deleteById(String id) {
-        if (checkBookExists(id)) {
-            Book book = new Book();
-            book.setId(id);
-            bookRepository.delete(book);
-            return StringUtils.BOOK_DELETE_RESPONSE;
-        }
-        return StringUtils.BOOK_NOT_DELETE_RESPONSE;
-    }
-
-    @Override
-    public String update(String id, String bookName, String authorId, String genreName) {
+    @Transactional(readOnly = true)
+    public BookDto getBookWithComments(long id) {
         Optional<Book> optionalBook = bookRepository.findById(id);
+        return optionalBook.map(ModelConverter::toBookWithCommentsDto)
+                .orElseThrow(() -> new BookNotFoundException(id));
+    }
+
+    @Override
+    public Book create(SaveBookDto bookDto) {
+        Book book = new Book(bookDto.getName());
+        book.setAuthor(authorService.getById(bookDto.getAuthorId()));
+        book.setGenre(genreService.getById(bookDto.getGenreId()));
+        return bookRepository.save(book);
+    }
+
+    @Override
+    public void deleteById(long id) {
+        if (checkBookExists(id)) {
+            bookRepository.delete(new Book(id));
+        } else {
+            throw new BookNotFoundException(id);
+        }
+    }
+
+    @Override
+    public Book update(SaveBookDto bookDto) {
+        Optional<Book> optionalBook = bookRepository.findById(bookDto.getId());
         if (optionalBook.isPresent()) {
             Book updateBook = optionalBook.get();
-            Author author = authorService.getById(authorId);
-            updateBook.setBookName(bookName);
-            updateBook.setAuthor(author);
-            updateBook.setGenre(new Genre(genreName));
-            bookRepository.save(updateBook);
-            return StringUtils.BOOK_UPDATED_RESPONSE;
+            updateBook.setBookName(bookDto.getName());
+            updateBook.setAuthor(authorService.getById(bookDto.getAuthorId()));
+            updateBook.setGenre(genreService.getById(bookDto.getGenreId()));
+            return bookRepository.save(updateBook);
         }
-        return StringUtils.BOOK_NOT_UPDATED_RESPONSE;
+        throw new BookNotFoundException(bookDto.getId());
     }
 
     @Override
-    public boolean checkBookExists(String id) {
+    public boolean checkBookExists(long id) {
         return bookRepository.existsById(id);
-    }
-
-    @Override
-    public Book getBookById(String id) {
-        return bookRepository.findById(id).orElse(null);
-    }
-
-
-    private String getBookInfo(Book book) {
-        return "id = " + book.getId() + ", name = " + book.getBookName() +
-                ", author = " + book.getAuthor().getAuthorName() + " " + book.getAuthor().getAuthorSurname() +
-                ", genre = " + book.getGenre().getGenreName();
     }
 
 }

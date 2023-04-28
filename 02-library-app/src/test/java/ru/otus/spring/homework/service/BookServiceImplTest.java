@@ -6,9 +6,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.otus.spring.homework.model.Author;
-import ru.otus.spring.homework.model.Book;
-import ru.otus.spring.homework.model.Genre;
+import ru.otus.spring.homework.exception.BookNotFoundException;
+import ru.otus.spring.homework.model.dto.BookDto;
+import ru.otus.spring.homework.model.dto.SaveBookDto;
+import ru.otus.spring.homework.model.entity.Author;
+import ru.otus.spring.homework.model.entity.Book;
+import ru.otus.spring.homework.model.entity.Genre;
 import ru.otus.spring.homework.repository.BookRepository;
 
 import java.util.ArrayList;
@@ -29,83 +32,99 @@ class BookServiceImplTest {
     @Mock
     private AuthorService authorService;
 
+    @Mock
+    private GenreService genreService;
+
     @Test
     void getByIdIfBookExistsTest() {
-        given(bookRepository.findById("642414e251c1e2380fb49ab8")).willReturn(Optional.of(new Book("642414e251c1e2380fb49ab8",
-                "Captains daughter", new Author("Aleksandr", "Pushkin"), new Genre("Historical Novel"), null)));
-        String book = bookService.getById("642414e251c1e2380fb49ab8");
-        Assertions.assertTrue(book.contains("Captains daughter"));
+        given(bookRepository.findById(1L)).willReturn(Optional.of(new Book(1, "bookName",
+                new Author(1, "name", "surname"), new Genre(1, "genre"), null)));
+        BookDto book = bookService.getBookDtoById(1);
+        Assertions.assertNotNull(book);
+        Assertions.assertEquals("bookName", book.getName());
     }
 
     @Test
     void getByIdIfBookNotExistsTest() {
-        given(bookRepository.findById("642414e251c1e2380fb49ab8")).willReturn(Optional.empty());
-        String book = bookService.getById("642414e251c1e2380fb49ab8");
-        Assertions.assertTrue(book.contains("not found"));
+        given(bookRepository.findById(1L)).willReturn(Optional.empty());
+        Assertions.assertThrows(BookNotFoundException.class, () -> bookService.getBookDtoById(1));
     }
 
     @Test
     void getAllIfBooksExistsTest() {
         List<Book> books = new ArrayList<>();
-        books.add(new Book("642414e251c1e2380fb49ab8", "Captains daughter",
-                new Author("Aleksandr", "Pushkin"), new Genre("Historical Novel"), null));
-        books.add(new Book("642414e251c1e2380fb49abb", "Lord Of The Rings",
-                new Author("John", "Tolkien"), new Genre("Fantasy"), null));
+        books.add(new Book(1, "bookName",
+                new Author(1, "name", "surname"),
+                new Genre(1, "genre"),
+                null));
+        books.add(new Book(2, "bookName",
+                new Author(1, "name", "surname"),
+                new Genre(1, "genre"),
+                null));
         given(bookRepository.findAll()).willReturn(books);
         Assertions.assertEquals(2, bookService.getAll().size());
     }
 
     @Test
     void createIfOkTest() {
-        given(authorService.getById("642414e251c1e2380fb49ab1")).willReturn(new Author("Aleksandr", "Pushkin"));
-        Book newBook = new Book("new book",
-                new Author("Aleksandr", "Pushkin"), new Genre("Historical Novel"));
-        newBook.setId(null);
-        given(bookRepository.save(newBook)).willReturn(newBook);
-        String book = bookService.create("new book", "642414e251c1e2380fb49ab1", "Historical Novel");
-        Assertions.assertTrue(book.contains("Book successfully created"));
-    }
+        Book newBook = new Book("name");
+        newBook.setGenre(new Genre(1));
+        newBook.setAuthor(new Author(1));
 
-    @Test
-    void createIfAuthorNotFoundTest() {
-        given(authorService.getById("642414e251c1e2380fb49ab1")).willReturn(null);
-        String book = bookService.create("new book", "642414e251c1e2380fb49ab1", "Historical Novel");
-        Assertions.assertTrue(book.contains("Book creation failed, unknown authorId"));
-    }
+        given(bookRepository.save(newBook))
+                .willReturn(new Book(3, "name"));
+        given(authorService.getById(1)).willReturn(new Author(1));
+        given(genreService.getById(1)).willReturn(new Genre(1));
 
-    @Test
-    void deleteByIdIfBookExistTest() {
-        given(bookRepository.existsById("642414e251c1e2380fb49ab8")).willReturn(true);
-        String book = bookService.deleteById("642414e251c1e2380fb49ab8");
-        Assertions.assertTrue(book.contains("Book successfully deleted"));
-    }
+        SaveBookDto bookDto = new SaveBookDto();
+        bookDto.setName("name");
+        bookDto.setAuthorId(1L);
+        bookDto.setGenreId(1L);
 
-    @Test
-    void deleteByIdIfBookNotExistTest() {
-        given(bookRepository.existsById("642414e251c1e2380fb49ab8")).willReturn(false);
-        String book = bookService.deleteById("642414e251c1e2380fb49ab8");
-        Assertions.assertTrue(book.contains("Book delete failed"));
+        Book book = bookService.create(bookDto);
+        Assertions.assertEquals("name", book.getBookName());
+        Assertions.assertNotNull(book);
     }
 
     @Test
     void updateIfBookExistTest() {
-        Book bookToUpdate = new Book("bookName3");
-        bookToUpdate.setId("642414e251c1e2380fb49ab8");
-        bookToUpdate.setGenre(new Genre("Historical Novel"));
-        bookToUpdate.setAuthor(new Author("Aleksandr", "Pushkin"));
+        Book bookToUpdate = new Book(1, "bookName3");
+        bookToUpdate.setGenre(new Genre(2));
+        bookToUpdate.setAuthor(new Author(2));
+
         given(bookRepository.save(bookToUpdate))
-                .willReturn(new Book("bookName3"));
-        given(bookRepository.findById("642414e251c1e2380fb49ab8")).willReturn(Optional.of(bookToUpdate));
-        String book = bookService.update("642414e251c1e2380fb49ab8", "bookName3", "642414e251c1e2380fb49ab1",
-                "Historical Novel");
-        Assertions.assertTrue(book.contains("Book successfully updated"));
+                .willReturn(new Book(1, "bookName3"));
+        given(authorService.getById(2)).willReturn(new Author(2));
+        given(genreService.getById(2)).willReturn(new Genre(2));
+        given(bookRepository.findById(1L)).willReturn(Optional.of(bookToUpdate));
+
+        SaveBookDto bookDto = new SaveBookDto();
+        bookDto.setId(1L);
+        bookDto.setName("bookName3");
+        bookDto.setAuthorId(2L);
+        bookDto.setGenreId(2L);
+
+        Book book = bookService.update(bookDto);
+        Assertions.assertEquals("bookName3", book.getBookName());
+        Assertions.assertNotNull(book);
     }
 
     @Test
     void updateIfBookNotExistTest() {
-        given(bookRepository.findById("642414e251c1e2380fb49ab8")).willReturn(Optional.empty());
-        String book = bookService.update("642414e251c1e2380fb49ab8", "bookName3", "642414e251c1e2380fb49ab1",
-                "Historical Novel");
-        Assertions.assertTrue(book.contains("Book update failed"));
+        given(bookRepository.findById(1L)).willReturn(Optional.empty());
+
+        SaveBookDto bookDto = new SaveBookDto();
+        bookDto.setId(1L);
+        bookDto.setName("bookName3");
+        bookDto.setAuthorId(2L);
+        bookDto.setGenreId(2L);
+
+        Assertions.assertThrows(BookNotFoundException.class, () -> bookService.update(bookDto));
+    }
+
+    @Test
+    void deleteIfNotOkTest() {
+        given(bookService.checkBookExists(1L)).willReturn(false);
+        Assertions.assertThrows(BookNotFoundException.class, () -> bookService.deleteById(1));
     }
 }
