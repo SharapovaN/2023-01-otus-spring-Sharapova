@@ -1,24 +1,23 @@
 package ru.otus.spring.homework.controller;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import ru.otus.spring.homework.JsonTestConverter;
 import ru.otus.spring.homework.model.dto.CommentDto;
 import ru.otus.spring.homework.service.CommentService;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebMvcTest(CommentController.class)
 class CommentControllerTest {
@@ -35,11 +34,13 @@ class CommentControllerTest {
 
         given(commentService.getAll()).willReturn(comments);
 
-        mvc.perform(get("/comments"))
+        MvcResult result = mvc.perform(get("/comment"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-                .andExpect(view().name("comments"))
-                .andExpect(model().attribute("comments", hasSize(1)));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)).andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        CommentDto[] bookDtos = JsonTestConverter.mapFromJson(content, CommentDto[].class);
+        Assertions.assertEquals(1, bookDtos.length);
     }
 
     @Test
@@ -48,11 +49,10 @@ class CommentControllerTest {
 
         given(commentService.getById(1)).willReturn(comment);
 
-        mvc.perform(get("/comment/1"))
+        MvcResult result = mvc.perform(get("/comment/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-                .andExpect(view().name("comments"))
-                .andExpect(model().attribute("comments", hasSize(1)));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)).andReturn();
+        Assertions.assertTrue(result.getResponse().getContentAsString().contains("comment1"));
     }
 
     @Test
@@ -61,51 +61,36 @@ class CommentControllerTest {
 
         given(commentService.getByBookId(1)).willReturn(comments);
 
-        mvc.perform(get("/book/comments?bookId=1"))
+        MvcResult result = mvc.perform(get("/comment/book/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-                .andExpect(view().name("comments"))
-                .andExpect(model().attribute("comments", hasSize(1)));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)).andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        CommentDto[] bookDtos = JsonTestConverter.mapFromJson(content, CommentDto[].class);
+        Assertions.assertEquals(1, bookDtos.length);
     }
 
     @Test
-    void getCreatePageTest() throws Exception {
-        mvc.perform(get("/comment/create?bookId=1"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-                .andExpect(view().name("create-comment"));
+    void createTest() throws Exception {
+        CommentDto comment = new CommentDto();
+        comment.setComment("newComment");
+
+        given(commentService.create(comment)).willReturn(comment);
+
+        MvcResult result = mvc.perform(post("/comment").content(JsonTestConverter.mapToJson(comment))
+                .contentType(MediaType.APPLICATION_JSON)).andReturn();
+        Assertions.assertTrue(result.getResponse().getContentAsString().contains("newComment"));
     }
 
     @Test
-    void getEditPageTest() throws Exception {
-        CommentDto comment = new CommentDto(1, 1, "book", "comment1");
+    void editTest() throws Exception {
+        CommentDto comment = new CommentDto(1, 1, "book", "newComment");
 
-        given(commentService.getById(1)).willReturn(comment);
+        given(commentService.update(comment)).willReturn(comment);
 
-        mvc.perform(get("/comment/edit?id=1"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-                .andExpect(view().name("edit-comment"));
+        MvcResult result = mvc.perform(put("/comment").content(JsonTestConverter.mapToJson(comment))
+                .contentType(MediaType.APPLICATION_JSON)).andReturn();
+        Assertions.assertTrue(result.getResponse().getContentAsString().contains("newComment"));
     }
 
-    @Test
-    void deleteCommentTest() throws Exception {
-        mvc.perform(get("/comment/delete?id=1"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/comments"));
-    }
-
-    @Test
-    void createCommentTest() throws Exception {
-        mvc.perform(post("/comment/create"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/comments"));
-    }
-
-    @Test
-    void editCommentTest() throws Exception {
-        mvc.perform(post("/comment/edit"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/comments"));
-    }
 }

@@ -2,8 +2,10 @@ package ru.otus.spring.homework.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.otus.spring.homework.model.dto.AuthorDto;
 import ru.otus.spring.homework.model.entity.Author;
 import ru.otus.spring.homework.repository.AuthorRepository;
+import ru.otus.spring.homework.utils.ModelConverter;
 
 import java.util.List;
 
@@ -19,7 +21,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<Author> getAuthorsList() {
-        return authorRepository.findAll();
+    public List<AuthorDto> getAuthorsList() {
+        return authorRepository.findAll().stream().map(ModelConverter::toAuthorDto).toList();
     }
 }

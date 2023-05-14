@@ -36,9 +36,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment create(CommentDto comment) {
+    public CommentDto create(CommentDto comment) {
         if (bookService.checkBookExists(comment.getBookId())) {
-            return commentRepository.save(new Comment(bookService.getById(comment.getBookId()), comment.getComment()));
+            return ModelConverter.toCommentDto(commentRepository
+                    .save(new Comment(bookService.getById(comment.getBookId()), comment.getComment())));
         }
         throw new BookNotFoundException(comment.getBookId());
     }
@@ -53,13 +54,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment update(CommentDto comment) {
+    public CommentDto update(CommentDto comment) {
         Optional<Comment> optionalComment = commentRepository.findById(comment.getId());
         if (optionalComment.isPresent()) {
             Comment updateComment = optionalComment.get();
             updateComment.setBook(bookService.getById(comment.getBookId()));
             updateComment.setComment(comment.getComment());
-            return commentRepository.save(updateComment);
+            return ModelConverter.toCommentDto(commentRepository.save(updateComment));
         }
         throw new CommentNotFoundException(comment.getId());
     }
