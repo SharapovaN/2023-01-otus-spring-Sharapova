@@ -13,15 +13,13 @@ public interface BookService {
 
     Book getById(long id);
 
-    SaveBookDto getSaveBookDtoById(long id);
-
     BookDto getBookWithComments(long id);
 
-    Book create(SaveBookDto book);
+    BookDto create(SaveBookDto book);
 
     void deleteById(long id);
 
-    Book update(SaveBookDto book);
+    BookDto update(SaveBookDto book);
 
     boolean checkBookExists(long id);
 }

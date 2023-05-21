@@ -38,12 +38,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public SaveBookDto getSaveBookDtoById(long id) {
-        return bookRepository.findById(id).map(ModelConverter::toSaveBookDto)
-                .orElseThrow(() -> new BookNotFoundException(id));
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public BookDto getBookWithComments(long id) {
         Optional<Book> optionalBook = bookRepository.findById(id);
@@ -52,11 +46,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book create(SaveBookDto bookDto) {
+    public BookDto create(SaveBookDto bookDto) {
         Book book = new Book(bookDto.getName());
         book.setAuthor(authorService.getById(bookDto.getAuthorId()));
         book.setGenre(genreService.getById(bookDto.getGenreId()));
-        return bookRepository.save(book);
+        return ModelConverter.toBookDto(bookRepository.save(book));
     }
 
     @Override
@@ -69,14 +63,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book update(SaveBookDto bookDto) {
+    public BookDto update(SaveBookDto bookDto) {
         Optional<Book> optionalBook = bookRepository.findById(bookDto.getId());
         if (optionalBook.isPresent()) {
             Book updateBook = optionalBook.get();
             updateBook.setBookName(bookDto.getName());
             updateBook.setAuthor(authorService.getById(bookDto.getAuthorId()));
             updateBook.setGenre(genreService.getById(bookDto.getGenreId()));
-            return bookRepository.save(updateBook);
+            return ModelConverter.toBookDto(bookRepository.save(updateBook));
         }
         throw new BookNotFoundException(bookDto.getId());
     }

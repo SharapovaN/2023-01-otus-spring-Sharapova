@@ -1,7 +1,6 @@
 package ru.otus.spring.homework.service;
 
 import ru.otus.spring.homework.model.dto.CommentDto;
-import ru.otus.spring.homework.model.entity.Comment;
 
 import java.util.List;
 
@@ -12,9 +11,9 @@ public interface CommentService {
 
     List<CommentDto> getByBookId(long id);
 
-    Comment create(CommentDto comment);
+    CommentDto create(CommentDto comment);
 
     void deleteById(long id);
 
-    Comment update(CommentDto comment);
+    CommentDto update(CommentDto comment);
 }
