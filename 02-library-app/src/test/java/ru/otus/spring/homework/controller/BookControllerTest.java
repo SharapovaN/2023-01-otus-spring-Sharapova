@@ -1,10 +1,13 @@
 package ru.otus.spring.homework.controller;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.spring.homework.model.dto.BookDto;
 import ru.otus.spring.homework.model.dto.SaveBookDto;
@@ -18,13 +21,12 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@ExtendWith(SpringExtension.class)
 @WebMvcTest(BookController.class)
 class BookControllerTest {
 
@@ -40,6 +42,11 @@ class BookControllerTest {
     @MockBean
     private GenreService genreService;
 
+
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
     @Test
     void getAllBooksTest() throws Exception {
         List<BookDto> books = List.of(new BookDto(1, "bookName", "authorName", "genreName", null),
@@ -54,6 +61,10 @@ class BookControllerTest {
                 .andExpect(model().attribute("books", hasSize(2)));
     }
 
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
     @Test
     void getBookTest() throws Exception {
         BookDto bookDto = new BookDto(1, "bookName", "authorName", "genreName", null);
@@ -67,6 +78,10 @@ class BookControllerTest {
                 .andExpect(model().attribute("books", List.of(bookDto)));
     }
 
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
     @Test
     void getBookWithCommentsTest() throws Exception {
         List<String> comments = List.of("comment", "comment1");
@@ -81,6 +96,10 @@ class BookControllerTest {
                 .andExpect(model().attribute("book", bookDto));
     }
 
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
     @Test
     void createBookPageTest() throws Exception {
         List<Author> authors = List.of(new Author(1, "name", "surname"));
@@ -96,6 +115,10 @@ class BookControllerTest {
                 .andExpect(model().attribute("authors", authors));
     }
 
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
     @Test
     void editBookPageTest() throws Exception {
         List<Author> authors = List.of(new Author(1, "name", "surname"));
@@ -115,6 +138,10 @@ class BookControllerTest {
                 .andExpect(model().attribute("authors", authors));
     }
 
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
     @Test
     void deleteBookPageTest() throws Exception {
         mvc.perform(get("/delete?id=1"))
@@ -122,17 +149,35 @@ class BookControllerTest {
                 .andExpect(view().name("redirect:/"));
     }
 
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
     @Test
     void createBook() throws Exception {
-        mvc.perform(post("/create"))
+        mvc.perform(post("/create").with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/"));
+    }
+
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
+    @Test
+    void editBook() throws Exception {
+        mvc.perform(post("/edit").with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
     }
 
     @Test
-    void editBook() throws Exception {
-        mvc.perform(post("/edit"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/"));
+    void getBookUnauthorizedTest() throws Exception {
+        BookDto bookDto = new BookDto(1, "bookName", "authorName", "genreName", null);
+
+        given(bookService.getBookDtoById(1)).willReturn(bookDto);
+
+        mvc.perform(get("/book/1"))
+                .andExpect(status().is4xxClientError());
     }
 }
