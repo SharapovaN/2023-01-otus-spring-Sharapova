@@ -66,7 +66,7 @@ class CommentServiceImplTest {
         commentDto.setBookId(1L);
         commentDto.setComment("comment1");
 
-        CommentDto comment = commentService.create(commentDto);
+        Comment comment = commentService.create(commentDto);
         Assertions.assertNotNull(comment);
         Assertions.assertEquals("comment1", comment.getComment());
     }
@@ -100,7 +100,7 @@ class CommentServiceImplTest {
         commentDto.setBookId(1L);
         commentDto.setComment("newComment");
 
-        CommentDto comment = commentService.update(commentDto);
+        Comment comment = commentService.update(commentDto);
         Assertions.assertNotNull(comment);
         Assertions.assertEquals("newComment", comment.getComment());
     }
