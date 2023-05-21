@@ -11,6 +11,7 @@
     <modules>
         <module>01-student-testing-app</module>
         <module>02-library-app</module>
+        <module>03-library-WebFlux</module>
     </modules>
 
     <parent>
