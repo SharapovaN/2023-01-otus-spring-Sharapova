@@ -2,21 +2,12 @@ package ru.otus.spring.homework.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.otus.spring.homework.model.Book;
-import ru.otus.spring.homework.model.Comment;
-import ru.otus.spring.homework.repository.CommentRepository;
-import ru.otus.spring.homework.utils.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @Service
 public class CommentServiceImpl implements CommentService {
 
-    private final BookService bookService;
+    /*private final BookService bookService;
     private final CommentRepository commentRepository;
 
     @Override
@@ -62,5 +53,5 @@ public class CommentServiceImpl implements CommentService {
             return StringUtils.COMMENT_UPDATED_RESPONSE;
         }
         return StringUtils.COMMENT_NOT_UPDATED_RESPONSE;
-    }
+    }*/
 }

@@ -1,11 +1,9 @@
 package ru.otus.spring.homework.service;
 
-import ru.otus.spring.homework.model.Book;
-
 import java.util.List;
 
 public interface BookService {
-    List<String> getAll();
+   /* List<String> getAll();
 
     String getById(String id);
 
@@ -19,5 +17,5 @@ public interface BookService {
 
     boolean checkBookExists(String id);
 
-    Book getBookById(String id);
+    Book getBookById(String id);*/
 }

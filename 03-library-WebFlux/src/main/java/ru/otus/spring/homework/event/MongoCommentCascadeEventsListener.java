@@ -6,8 +6,8 @@ import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventLis
 import org.springframework.data.mongodb.core.mapping.event.AfterDeleteEvent;
 import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent;
 import org.springframework.stereotype.Component;
-import ru.otus.spring.homework.model.Book;
-import ru.otus.spring.homework.model.Comment;
+import ru.otus.spring.homework.model.entity.Book;
+import ru.otus.spring.homework.model.entity.Comment;
 import ru.otus.spring.homework.repository.BookRepository;
 
 import java.util.ArrayList;

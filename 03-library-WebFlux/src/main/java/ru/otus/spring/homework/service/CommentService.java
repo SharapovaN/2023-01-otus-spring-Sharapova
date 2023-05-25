@@ -3,7 +3,7 @@ package ru.otus.spring.homework.service;
 import java.util.List;
 
 public interface CommentService {
-    List<String> getAll();
+   /* List<String> getAll();
 
     String getById(String id);
 
@@ -11,5 +11,5 @@ public interface CommentService {
 
     String deleteById(String id);
 
-    String update(String id, String bookId, String comment);
+    String update(String id, String bookId, String comment);*/
 }

@@ -1,6 +1,6 @@
 package ru.otus.spring.homework.repository;
 
-import ru.otus.spring.homework.model.Comment;
+import ru.otus.spring.homework.model.entity.Comment;
 
 import java.util.Set;
 

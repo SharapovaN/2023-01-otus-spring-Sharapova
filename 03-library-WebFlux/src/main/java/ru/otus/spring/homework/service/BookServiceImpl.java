@@ -2,20 +2,12 @@ package ru.otus.spring.homework.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.otus.spring.homework.model.Author;
-import ru.otus.spring.homework.model.Book;
-import ru.otus.spring.homework.model.Comment;
-import ru.otus.spring.homework.model.Genre;
-import ru.otus.spring.homework.repository.BookRepository;
-import ru.otus.spring.homework.utils.StringUtils;
-
-import java.util.*;
 
 @AllArgsConstructor
 @Service
 public class BookServiceImpl implements BookService {
 
-    private final BookRepository bookRepository;
+    /*private final BookRepository bookRepository;
 
     private final AuthorService authorService;
 
@@ -94,5 +86,5 @@ public class BookServiceImpl implements BookService {
                 ", author = " + book.getAuthor().getAuthorName() + " " + book.getAuthor().getAuthorSurname() +
                 ", genre = " + book.getGenre().getGenreName();
     }
-
+*/
 }

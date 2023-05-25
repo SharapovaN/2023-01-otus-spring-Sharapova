@@ -1,7 +1,7 @@
 package ru.otus.spring.homework.repository;
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import ru.otus.spring.homework.model.Comment;
+import ru.otus.spring.homework.model.entity.Comment;
 
 import java.util.List;
 

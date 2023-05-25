@@ -7,8 +7,8 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import ru.otus.spring.homework.model.Book;
-import ru.otus.spring.homework.model.Comment;
+import ru.otus.spring.homework.model.entity.Book;
+import ru.otus.spring.homework.model.entity.Comment;
 
 import java.util.HashSet;
 import java.util.List;
