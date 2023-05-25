@@ -1,24 +1,27 @@
 package ru.otus.spring.homework.controller;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import ru.otus.spring.homework.JsonTestConverter;
 import ru.otus.spring.homework.model.dto.CommentDto;
 import ru.otus.spring.homework.service.CommentService;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@ExtendWith(SpringExtension.class)
 @WebMvcTest(CommentController.class)
 class CommentControllerTest {
 
@@ -28,69 +31,125 @@ class CommentControllerTest {
     @MockBean
     private CommentService commentService;
 
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
     @Test
     void getCommentsTest() throws Exception {
         List<CommentDto> comments = List.of(new CommentDto(1, 1, "book", "comment1"));
 
         given(commentService.getAll()).willReturn(comments);
 
-        MvcResult result = mvc.perform(get("/comment"))
+        mvc.perform(get("/comments"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)).andReturn();
-
-        String content = result.getResponse().getContentAsString();
-        CommentDto[] bookDtos = JsonTestConverter.mapFromJson(content, CommentDto[].class);
-        Assertions.assertEquals(1, bookDtos.length);
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+                .andExpect(view().name("comments"))
+                .andExpect(model().attribute("comments", hasSize(1)));
     }
 
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
     @Test
     void getCommentTest() throws Exception {
         CommentDto comment = new CommentDto(1, 1, "book", "comment1");
 
         given(commentService.getById(1)).willReturn(comment);
 
-        MvcResult result = mvc.perform(get("/comment/1"))
+        mvc.perform(get("/comment/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)).andReturn();
-        Assertions.assertTrue(result.getResponse().getContentAsString().contains("comment1"));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+                .andExpect(view().name("comments"))
+                .andExpect(model().attribute("comments", hasSize(1)));
     }
 
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
     @Test
     void getBookCommentsTest() throws Exception {
         List<CommentDto> comments = List.of(new CommentDto(1, 1, "book", "comment1"));
 
         given(commentService.getByBookId(1)).willReturn(comments);
 
-        MvcResult result = mvc.perform(get("/comment/book/1"))
+        mvc.perform(get("/book/comments?bookId=1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)).andReturn();
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+                .andExpect(view().name("comments"))
+                .andExpect(model().attribute("comments", hasSize(1)));
+    }
 
-        String content = result.getResponse().getContentAsString();
-        CommentDto[] bookDtos = JsonTestConverter.mapFromJson(content, CommentDto[].class);
-        Assertions.assertEquals(1, bookDtos.length);
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
+    @Test
+    void getCreatePageTest() throws Exception {
+        mvc.perform(get("/comment/create?bookId=1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+                .andExpect(view().name("create-comment"));
+    }
+
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
+    @Test
+    void getEditPageTest() throws Exception {
+        CommentDto comment = new CommentDto(1, 1, "book", "comment1");
+
+        given(commentService.getById(1)).willReturn(comment);
+
+        mvc.perform(get("/comment/edit?id=1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+                .andExpect(view().name("edit-comment"));
+    }
+
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
+    @Test
+    void deleteCommentTest() throws Exception {
+        mvc.perform(get("/comment/delete?id=1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/comments"));
+    }
+
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
+    @Test
+    void createCommentTest() throws Exception {
+        mvc.perform(post("/comment/create").with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/comments"));
+    }
+
+    @WithMockUser(
+            username = "user",
+            authorities = {"ROLE_USER"}
+    )
+    @Test
+    void editCommentTest() throws Exception {
+        mvc.perform(post("/comment/edit").with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/comments"));
     }
 
     @Test
-    void createTest() throws Exception {
-        CommentDto comment = new CommentDto();
-        comment.setComment("newComment");
+    void getCommentUnauthorizedTest() throws Exception {
+        CommentDto comment = new CommentDto(1, 1, "book", "comment1");
 
-        given(commentService.create(comment)).willReturn(comment);
+        given(commentService.getById(1)).willReturn(comment);
 
-        MvcResult result = mvc.perform(post("/comment").content(JsonTestConverter.mapToJson(comment))
-                .contentType(MediaType.APPLICATION_JSON)).andReturn();
-        Assertions.assertTrue(result.getResponse().getContentAsString().contains("newComment"));
+        mvc.perform(get("/comment/1"))
+                .andExpect(status().is4xxClientError());
     }
-
-    @Test
-    void editTest() throws Exception {
-        CommentDto comment = new CommentDto(1, 1, "book", "newComment");
-
-        given(commentService.update(comment)).willReturn(comment);
-
-        MvcResult result = mvc.perform(put("/comment").content(JsonTestConverter.mapToJson(comment))
-                .contentType(MediaType.APPLICATION_JSON)).andReturn();
-        Assertions.assertTrue(result.getResponse().getContentAsString().contains("newComment"));
-    }
-
 }
