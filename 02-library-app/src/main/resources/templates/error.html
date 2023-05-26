@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Error page</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+    </style>
+</head>
+<body>
+<div class="row">
+The User has no permission for this operation.
+</div>
+<br>
+<br>
+<div class="row">
+    <a href="books.html" th:href="@{/}">To books list</a>
+</div>
+</body>
+</html>

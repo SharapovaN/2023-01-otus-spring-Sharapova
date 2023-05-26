@@ -3,6 +3,8 @@ DROP TABLE IF EXISTS books;
 DROP TABLE IF EXISTS genres;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS roles;
+DROP TABLE IF EXISTS user_role;
 
 CREATE TABLE authors
 (
@@ -41,5 +43,25 @@ CREATE TABLE users
     id       BIGINT       NOT NULL AUTO_INCREMENT,
     username VARCHAR(50)  NOT NULL,
     password VARCHAR(250) NOT NULL,
+    PRIMARY KEY (id),
+    constraint uq1 unique (username)
+);
+
+CREATE TABLE roles
+(
+    id   BIGINT      NOT NULL AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
     PRIMARY KEY (id)
+);
+
+CREATE TABLE users_roles
+(
+    users_id BIGINT NOT NULL,
+    roles_id BIGINT NOT NULL,
+    CONSTRAINT users_id
+        FOREIGN KEY (users_id)
+            REFERENCES users (id),
+    CONSTRAINT roles_id
+        FOREIGN KEY (roles_id)
+            REFERENCES roles (id)
 );
