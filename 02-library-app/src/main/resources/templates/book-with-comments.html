@@ -39,17 +39,17 @@
     </tr>
     </thead>
     <tbody>
-        <td th:text="${book.id}">1</td>
-        <td th:text="${book.name}">Book Name</td>
-        <td th:text="${book.author}">Author Name</td>
-        <td th:text="${book.genre}">Author Name</td>
-        <td>
-            <table>
-                <tr th:each="comment : ${book.comments}">
-                    <td style="border:0px;" th:text="${comment}">Comment</td>
-                </tr>
-            </table>
-        </td>
+    <td th:text="${book.id}">1</td>
+    <td th:text="${book.name}">Book Name</td>
+    <td th:text="${book.author}">Author Name</td>
+    <td th:text="${book.genre}">Author Name</td>
+    <td>
+        <table>
+            <tr th:each="comment : ${book.comments}">
+                <td style="border:0px;" th:text="${comment}">Comment</td>
+            </tr>
+        </table>
+    </td>
     </tbody>
 </table>
 </body>

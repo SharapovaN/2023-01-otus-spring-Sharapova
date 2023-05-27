@@ -16,7 +16,6 @@ import ru.otus.spring.homework.service.AuthorService;
 import ru.otus.spring.homework.service.BookService;
 import ru.otus.spring.homework.service.GenreService;
 
-import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -80,12 +79,14 @@ public class BookController {
         return "redirect:/";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public String createBook(SaveBookDto book) {
         bookService.create(book);
         return "redirect:/";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/edit")
     public String editBook(SaveBookDto book) {
         bookService.update(book);

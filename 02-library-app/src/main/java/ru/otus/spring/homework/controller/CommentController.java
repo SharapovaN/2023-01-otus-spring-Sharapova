@@ -67,12 +67,14 @@ public class CommentController {
         return "redirect:/comments";
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/comment/create")
     public String createComment(CommentDto commentDto) {
         commentService.create(commentDto);
         return "redirect:/comments";
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/comment/edit")
     public String editComment(CommentDto commentDto) {
         commentService.update(commentDto);

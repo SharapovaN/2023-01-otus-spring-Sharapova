@@ -29,7 +29,7 @@
 
     <td th:text="${comment.bookName}">Book name</td>
 
-    <input type="hidden"  th:value="${comment.bookId}" id="bookId" name="bookId">
+    <input type="hidden" th:value="${comment.bookId}" id="bookId" name="bookId">
 
     <div class="row">
         <label for="comment-input">Comment:</label>
@@ -38,7 +38,9 @@
 
     <div class="row">
         <button type="submit">Save</button>
-        <a href="comments.html" th:href="@{/book/comments(bookId=${comment.bookId})}"><button type="button">Cancel</button></a>
+        <a href="comments.html" th:href="@{/book/comments(bookId=${comment.bookId})}">
+            <button type="button">Cancel</button>
+        </a>
     </div>
 </form>
 
