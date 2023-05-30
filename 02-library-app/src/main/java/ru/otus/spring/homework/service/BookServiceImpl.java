@@ -1,6 +1,7 @@
 package ru.otus.spring.homework.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.spring.homework.exception.BookNotFoundException;
@@ -27,23 +28,27 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public BookDto getBookDtoById(long id) {
         return bookRepository.findById(id).map(ModelConverter::toBookDto)
                 .orElseThrow(() -> new BookNotFoundException(id));
     }
 
     @Override
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public Book getById(long id) {
         return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
     }
 
     @Override
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public SaveBookDto getSaveBookDtoById(long id) {
         return bookRepository.findById(id).map(ModelConverter::toSaveBookDto)
                 .orElseThrow(() -> new BookNotFoundException(id));
     }
 
     @Override
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @Transactional(readOnly = true)
     public BookDto getBookWithComments(long id) {
         Optional<Book> optionalBook = bookRepository.findById(id);
@@ -52,6 +57,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public Book create(SaveBookDto bookDto) {
         Book book = new Book(bookDto.getName());
         book.setAuthor(authorService.getById(bookDto.getAuthorId()));
@@ -60,6 +66,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteById(long id) {
         if (checkBookExists(id)) {
             bookRepository.delete(new Book(id));
@@ -69,6 +76,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public Book update(SaveBookDto bookDto) {
         Optional<Book> optionalBook = bookRepository.findById(bookDto.getId());
         if (optionalBook.isPresent()) {

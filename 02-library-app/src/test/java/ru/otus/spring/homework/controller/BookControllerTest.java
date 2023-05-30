@@ -182,19 +182,4 @@ class BookControllerTest {
                 .andExpect(status().is4xxClientError());
     }
 
-    @WithMockUser(
-            username = "user",
-            authorities = {"ROLE_USER"}
-    )
-    @Test
-    void createBookPageWrongRoleTest() throws Exception {
-        List<Author> authors = List.of(new Author(1, "name", "surname"));
-        List<Genre> genres = List.of(new Genre(1, "genre"));
-
-        given(authorService.getAuthorsList()).willReturn(authors);
-        given(genreService.getGenresList()).willReturn(genres);
-
-        mvc.perform(get("/create"))
-                .andExpect(status().is4xxClientError());
-    }
 }

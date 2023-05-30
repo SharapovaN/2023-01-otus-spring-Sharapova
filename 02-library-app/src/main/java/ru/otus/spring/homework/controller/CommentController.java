@@ -19,7 +19,6 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/comments")
     public String getComments(Model model) {
         List<CommentDto> comments = commentService.getAll();
@@ -27,7 +26,6 @@ public class CommentController {
         return "comments";
     }
 
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/comment/{id}")
     public String getComment(@PathVariable("id") long id, Model model) {
         List<CommentDto> comments = List.of(commentService.getById(id));
@@ -35,7 +33,6 @@ public class CommentController {
         return "comments";
     }
 
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/book/comments")
     public String getBookComments(@RequestParam("bookId") long bookId, Model model) {
         List<CommentDto> comments = commentService.getByBookId(bookId);
@@ -43,7 +40,6 @@ public class CommentController {
         return "comments";
     }
 
-    @PreAuthorize("hasRole('USER')")
     @GetMapping("/comment/create")
     public String getCreatePage(@RequestParam("bookId") long bookId, Model model) {
         CommentDto comment = new CommentDto();
@@ -52,7 +48,6 @@ public class CommentController {
         return "create-comment";
     }
 
-    @PreAuthorize("hasRole('USER')")
     @GetMapping("/comment/edit")
     public String getEditPage(@RequestParam("id") long id, Model model) {
         CommentDto comment = commentService.getById(id);
@@ -60,21 +55,18 @@ public class CommentController {
         return "edit-comment";
     }
 
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/comment/delete")
     public String deleteComment(@RequestParam("id") long id) {
         commentService.deleteById(id);
         return "redirect:/comments";
     }
 
-    @PreAuthorize("hasRole('USER')")
     @PostMapping("/comment/create")
     public String createComment(CommentDto commentDto) {
         commentService.create(commentDto);
         return "redirect:/comments";
     }
 
-    @PreAuthorize("hasRole('USER')")
     @PostMapping("/comment/edit")
     public String editComment(CommentDto commentDto) {
         commentService.update(commentDto);

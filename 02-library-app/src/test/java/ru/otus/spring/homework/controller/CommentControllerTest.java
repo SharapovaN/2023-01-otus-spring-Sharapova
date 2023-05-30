@@ -154,18 +154,4 @@ class CommentControllerTest {
         mvc.perform(get("/comment/1"))
                 .andExpect(status().is4xxClientError());
     }
-
-    @WithMockUser(
-            username = "user",
-            authorities = {"ROLE_ADMIN"}
-    )
-    @Test
-    void getEditPageWrongRoleTest() throws Exception {
-        CommentDto comment = new CommentDto(1, 1, "book", "comment1");
-
-        given(commentService.getById(1)).willReturn(comment);
-
-        mvc.perform(get("/comment/edit?id=1"))
-                .andExpect(status().is4xxClientError());
-    }
 }

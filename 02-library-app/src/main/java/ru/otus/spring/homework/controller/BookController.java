@@ -33,7 +33,6 @@ public class BookController {
         return "books";
     }
 
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/book/{id}")
     public String getBook(@PathVariable("id") Long id, Model model) {
         List<BookDto> books = List.of(bookService.getBookDtoById(id));
@@ -41,7 +40,6 @@ public class BookController {
         return "books";
     }
 
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @GetMapping("/book-with-comments/{id}")
     public String getBookWithComments(@PathVariable("id") long id, Model model) {
         BookDto book = bookService.getBookWithComments(id);
@@ -49,7 +47,6 @@ public class BookController {
         return "book-with-comments";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/create")
     public String createBookPage(Model model) {
         List<Author> authors = authorService.getAuthorsList();
@@ -60,7 +57,6 @@ public class BookController {
         return "create";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/edit")
     public String editBookPage(@RequestParam("id") long id, Model model) {
         List<Author> authors = authorService.getAuthorsList();
@@ -72,21 +68,18 @@ public class BookController {
         return "edit";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/delete")
     public String deleteBookPage(@RequestParam("id") long id) {
         bookService.deleteById(id);
         return "redirect:/";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public String createBook(SaveBookDto book) {
         bookService.create(book);
         return "redirect:/";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/edit")
     public String editBook(SaveBookDto book) {
         bookService.update(book);
