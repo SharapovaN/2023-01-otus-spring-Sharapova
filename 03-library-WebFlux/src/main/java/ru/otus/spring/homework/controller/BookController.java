@@ -40,24 +40,26 @@ public class BookController {
 
     @PostMapping("/book")
     public Mono<BookDto> create(@RequestBody SaveBookDto bookDto) {
-        return bookRepository.save(toBook(bookDto)).map(ModelConverter::toBookDto);
+        Book newBook = new Book(bookDto.getName());
+        genreRepository.findById(bookDto.getGenreId()).doOnNext(newBook::setGenre).subscribe();
+        authorRepository.findById(bookDto.getAuthorId()).doOnNext(newBook::setAuthor).subscribe();
+        return bookRepository.save(newBook).map(ModelConverter::toBookDto);
     }
 
     @PutMapping("/book")
     public Mono<BookDto> edit(@RequestBody SaveBookDto bookDto) {
-        return bookRepository.save(toBook(bookDto)).map(ModelConverter::toBookDto);
+        return bookRepository.findById(bookDto.getId()).flatMap(oldBook -> {
+            oldBook.setBookName(bookDto.getName());
+            genreRepository.findById(bookDto.getGenreId()).doOnNext(oldBook::setGenre);
+            authorRepository.findById(bookDto.getAuthorId()).doOnNext(oldBook::setAuthor);
+            oldBook.setComments(oldBook.getComments());
+            return bookRepository.save(oldBook);
+        }).map(ModelConverter::toBookWithCommentsDto);
     }
 
     @DeleteMapping("/book/{id}")
-    public void delete(@PathVariable("id") String id) {
-        bookRepository.findById(id).doOnNext(bookRepository::delete).subscribe();
+    public Mono<Void> delete(@PathVariable("id") String id) {
+        return bookRepository.deleteById(id);
     }
 
-    private Book toBook(SaveBookDto bookDto) {
-        Book book = new Book(bookDto.getName());
-        book.setId(book.getId());
-        authorRepository.findById(bookDto.getAuthorId()).doOnNext(book::setAuthor).subscribe();
-        genreRepository.findById(bookDto.getGenreId()).doOnNext(book::setGenre).subscribe();
-        return book;
-    }
 }

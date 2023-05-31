@@ -31,7 +31,7 @@ public class MongoCommentCascadeEventsListener extends AbstractMongoEventListene
             comments.add(comment);
             book.setComments(comments);
         }
-        bookRepository.save(book);
+        bookRepository.save(book).subscribe();
     }
 
     @Override

@@ -31,28 +31,19 @@ public class ModelConverter {
         dto.setGenre(book.getGenre().getGenreName());
         List<String> comments = new ArrayList<>();
         List<Comment> commentList = book.getComments();
-        for (Comment comment : commentList) {
-            comments.add(comment.getComment());
+        if (commentList != null && !commentList.isEmpty()) {
+            for (Comment comment : commentList) {
+                comments.add(comment.getComment());
+            }
         }
         dto.setComments(comments);
-        return dto;
-    }
-
-    public static CommentDto toCommentDto(Comment comment) {
-        CommentDto dto = new CommentDto();
-
-        dto.setId(comment.getId());
-        dto.setBookId(comment.getBook().getId());
-        dto.setBookName(comment.getBook().getBookName());
-        dto.setComment(comment.getComment());
-
         return dto;
     }
 
     public static AuthorDto toAuthorDto(Author author) {
         AuthorDto dto = new AuthorDto();
         dto.setId(author.getId());
-        dto.setName(author.getAuthorName());
+        dto.setName(author.getAuthorName() + " " + author.getAuthorSurname());
         return dto;
     }
 
