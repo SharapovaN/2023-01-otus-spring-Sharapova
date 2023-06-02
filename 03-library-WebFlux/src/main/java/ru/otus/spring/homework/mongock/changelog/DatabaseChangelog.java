@@ -3,7 +3,6 @@ package ru.otus.spring.homework.mongock.changelog;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.client.MongoDatabase;
-import reactor.core.publisher.Mono;
 import ru.otus.spring.homework.model.entity.Author;
 import ru.otus.spring.homework.model.entity.Book;
 import ru.otus.spring.homework.model.entity.Comment;

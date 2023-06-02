@@ -9,5 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SaveBookDto extends BookDto {
     private String authorId;
+    private String authorName;
+    private String authorSurname;
     private String genreId;
+    private String genreName;
 }

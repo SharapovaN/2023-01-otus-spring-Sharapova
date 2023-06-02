@@ -1,9 +1,6 @@
 package ru.otus.spring.homework.utils;
 
-import ru.otus.spring.homework.model.dto.AuthorDto;
-import ru.otus.spring.homework.model.dto.BookDto;
-import ru.otus.spring.homework.model.dto.CommentDto;
-import ru.otus.spring.homework.model.dto.GenreDto;
+import ru.otus.spring.homework.model.dto.*;
 import ru.otus.spring.homework.model.entity.Author;
 import ru.otus.spring.homework.model.entity.Book;
 import ru.otus.spring.homework.model.entity.Comment;
@@ -18,7 +15,7 @@ public class ModelConverter {
         BookDto dto = new BookDto();
         dto.setId(book.getId());
         dto.setName(book.getBookName());
-        dto.setAuthor(book.getAuthor().getAuthorName());
+        dto.setAuthor(book.getAuthor().getAuthorName() + " " + book.getAuthor().getAuthorSurname());
         dto.setGenre(book.getGenre().getGenreName());
         return dto;
     }
@@ -27,7 +24,7 @@ public class ModelConverter {
         BookDto dto = new BookDto();
         dto.setId(book.getId());
         dto.setName(book.getBookName());
-        dto.setAuthor(book.getAuthor().getAuthorName());
+        dto.setAuthor(book.getAuthor().getAuthorName() + " " + book.getAuthor().getAuthorSurname());
         dto.setGenre(book.getGenre().getGenreName());
         List<String> comments = new ArrayList<>();
         List<Comment> commentList = book.getComments();
@@ -43,7 +40,8 @@ public class ModelConverter {
     public static AuthorDto toAuthorDto(Author author) {
         AuthorDto dto = new AuthorDto();
         dto.setId(author.getId());
-        dto.setName(author.getAuthorName() + " " + author.getAuthorSurname());
+        dto.setName(author.getAuthorName());
+        dto.setSurname(author.getAuthorSurname());
         return dto;
     }
 
@@ -52,6 +50,14 @@ public class ModelConverter {
         dto.setId(genre.getId());
         dto.setName(genre.getGenreName());
         return dto;
+    }
+
+    public static Book toBook(SaveBookDto bookDto) {
+        Book book = new Book(bookDto.getName());
+        book.setId(bookDto.getId());
+        book.setAuthor(new Author(bookDto.getAuthorId(), bookDto.getAuthorName(), bookDto.getAuthorSurname()));
+        book.setGenre(new Genre(bookDto.getGenreId(), bookDto.getGenreName()));
+        return book;
     }
 
 }
