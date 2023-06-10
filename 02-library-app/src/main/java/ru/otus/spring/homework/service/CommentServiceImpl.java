@@ -1,6 +1,7 @@
 package ru.otus.spring.homework.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.homework.exception.BookNotFoundException;
 import ru.otus.spring.homework.exception.CommentNotFoundException;
@@ -20,22 +21,26 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
 
     @Override
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public List<CommentDto> getAll() {
         return commentRepository.findAll().stream().map(ModelConverter::toCommentDto).toList();
     }
 
     @Override
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public CommentDto getById(long id) {
         return commentRepository.findById(id).map(ModelConverter::toCommentDto)
                 .orElseThrow(() -> new CommentNotFoundException(id));
     }
 
     @Override
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public List<CommentDto> getByBookId(long id) {
         return commentRepository.findByBookId(id).stream().map(ModelConverter::toCommentDto).toList();
     }
 
     @Override
+    @PreAuthorize("hasRole('USER')")
     public Comment create(CommentDto comment) {
         if (bookService.checkBookExists(comment.getBookId())) {
             return commentRepository.save(new Comment(bookService.getById(comment.getBookId()), comment.getComment()));
@@ -44,6 +49,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public void deleteById(long id) {
         if (commentRepository.findById(id).isPresent()) {
             commentRepository.delete(new Comment(id));
@@ -53,6 +59,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @PreAuthorize("hasRole('USER')")
     public Comment update(CommentDto comment) {
         Optional<Comment> optionalComment = commentRepository.findById(comment.getId());
         if (optionalComment.isPresent()) {

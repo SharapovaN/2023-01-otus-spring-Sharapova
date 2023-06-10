@@ -17,5 +17,14 @@ VALUES (1, 'Good book'),
        (2, 'Amazing');
 
 INSERT INTO users (username, password)
-VALUES ('user', 'pass');
+VALUES ('user', '111111'),
+       ('lib', '111111');
+
+INSERT INTO roles (name)
+VALUES ('ROLE_USER'),
+       ('ROLE_ADMIN');
+
+INSERT INTO users_roles (users_id, roles_id)
+VALUES ('1', '1'),
+       ('2', '2');
 

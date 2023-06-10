@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(BookController.class)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 class BookControllerTest {
 
     @Autowired
@@ -44,8 +46,7 @@ class BookControllerTest {
 
 
     @WithMockUser(
-            username = "user",
-            authorities = {"ROLE_USER"}
+            username = "user"
     )
     @Test
     void getAllBooksTest() throws Exception {
@@ -98,7 +99,7 @@ class BookControllerTest {
 
     @WithMockUser(
             username = "user",
-            authorities = {"ROLE_USER"}
+            authorities = {"ROLE_ADMIN"}
     )
     @Test
     void createBookPageTest() throws Exception {
@@ -117,7 +118,7 @@ class BookControllerTest {
 
     @WithMockUser(
             username = "user",
-            authorities = {"ROLE_USER"}
+            authorities = {"ROLE_ADMIN"}
     )
     @Test
     void editBookPageTest() throws Exception {
@@ -140,7 +141,7 @@ class BookControllerTest {
 
     @WithMockUser(
             username = "user",
-            authorities = {"ROLE_USER"}
+            authorities = {"ROLE_ADMIN"}
     )
     @Test
     void deleteBookPageTest() throws Exception {
@@ -150,8 +151,8 @@ class BookControllerTest {
     }
 
     @WithMockUser(
-            username = "user",
-            authorities = {"ROLE_USER"}
+            username = "lib",
+            authorities = {"ROLE_ADMIN"}
     )
     @Test
     void createBook() throws Exception {
@@ -161,8 +162,8 @@ class BookControllerTest {
     }
 
     @WithMockUser(
-            username = "user",
-            authorities = {"ROLE_USER"}
+            username = "lib",
+            authorities = {"ROLE_ADMIN"}
     )
     @Test
     void editBook() throws Exception {
@@ -180,4 +181,5 @@ class BookControllerTest {
         mvc.perform(get("/book/1"))
                 .andExpect(status().is4xxClientError());
     }
+
 }
