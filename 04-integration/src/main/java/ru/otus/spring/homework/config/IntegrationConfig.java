@@ -34,19 +34,13 @@ public class IntegrationConfig {
     public IntegrationFlow productionFlow(BackendTaskServiceImpl backendTaskService,
                                           FrontendTaskServiceImpl frontendTaskService) {
         return IntegrationFlows.from(inputTaskChannel())
-                .publishSubscribeChannel(subscription -> subscription
-                        .subscribe(
-                                subflow -> subflow
-                                        .filter(Task.class, t -> t.getType().equals("BACKEND"))
-                                        .handle(backendTaskService, "execute")
-                                        .channel(outputTaskChannel())
-                        )
-                        .subscribe(
-                                subflow -> subflow
-                                        .filter(Task.class, t -> t.getType().equals("FRONTEND"))
-                                        .handle(frontendTaskService, "execute")
-                                        .channel(outputTaskChannel())
-                        ))
+                .split()
+                .<Task, Boolean>route(t -> t.getType().equals("FRONTEND"),
+                        tt -> tt.subFlowMapping(true, ft -> ft.handle(frontendTaskService, "execute"))
+                                .subFlowMapping(false, bt -> bt.handle(backendTaskService, "execute"))
+                )
+                .aggregate()
+                .channel(outputTaskChannel())
                 .get();
     }
 }

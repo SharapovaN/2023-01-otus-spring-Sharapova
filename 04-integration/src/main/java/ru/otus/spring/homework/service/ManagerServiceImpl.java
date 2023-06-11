@@ -7,6 +7,12 @@ import ru.otus.spring.homework.model.BackendTaskImpl;
 import ru.otus.spring.homework.model.FrontendTaskImpl;
 import ru.otus.spring.homework.model.Task;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 public class ManagerServiceImpl implements ManagerService {
@@ -17,21 +23,36 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public void generateTasks() {
-        for (int i = 0; i < 10; i++) {
+        ForkJoinPool pool = ForkJoinPool.commonPool();
+        for (int i = 0; i < 5; i++) {
             delay();
-            Task newTask = generateTask();
-            System.out.println("New task: " + newTask.getDescription());
-            Task executedTask = productionGateway.process(newTask);
-            System.out.println("Task execution result: " + executedTask.toString());
+            pool.execute(() -> {
+                Collection<Task> tasks = generateTaskList();
+                System.out.println("New task: " +
+                        tasks.stream().map(Task::getDescription)
+                                .collect(Collectors.joining(", ")));
+                Collection<Task> executedTasks = productionGateway.process(tasks);
+                System.out.println("Task execution result: " + executedTasks.stream()
+                        .map(t -> t.toString() + "\n")
+                        .collect(Collectors.joining(", ")));
+            });
         }
     }
 
-    private Task generateTask() {
+    private static Task generateTask() {
         if (RandomUtils.nextInt(1, 10) % 2 == 0) {
             return new FrontendTaskImpl("Task N" + counter++ + " Recolor the button");
         } else {
             return new BackendTaskImpl("Task N" + counter++ + " Need a new endpoint");
         }
+    }
+
+    private static Collection<Task> generateTaskList() {
+        List<Task> tasks = new ArrayList<>();
+        for (int i = 0; i < RandomUtils.nextInt(1, 5); ++i) {
+            tasks.add(generateTask());
+        }
+        return tasks;
     }
 
     private void delay() {
