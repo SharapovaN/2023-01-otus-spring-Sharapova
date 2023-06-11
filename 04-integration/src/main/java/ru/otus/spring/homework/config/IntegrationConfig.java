@@ -34,19 +34,17 @@ public class IntegrationConfig {
     public IntegrationFlow productionFlow(BackendTaskServiceImpl backendTaskService,
                                           FrontendTaskServiceImpl frontendTaskService) {
         return IntegrationFlows.from(inputTaskChannel())
-                .split().publishSubscribeChannel(subscription -> subscription
+                .publishSubscribeChannel(subscription -> subscription
                         .subscribe(
                                 subflow -> subflow
                                         .filter(Task.class, t -> t.getType().equals("BACKEND"))
                                         .handle(backendTaskService, "execute")
-                                        .aggregate()
                                         .channel(outputTaskChannel())
                         )
                         .subscribe(
                                 subflow -> subflow
                                         .filter(Task.class, t -> t.getType().equals("FRONTEND"))
                                         .handle(frontendTaskService, "execute")
-                                        .aggregate()
                                         .channel(outputTaskChannel())
                         ))
                 .get();
