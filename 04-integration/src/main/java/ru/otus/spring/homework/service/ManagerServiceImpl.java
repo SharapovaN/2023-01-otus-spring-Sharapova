@@ -39,7 +39,7 @@ public class ManagerServiceImpl implements ManagerService {
         }
     }
 
-    private static Task generateTask() {
+    private Task generateTask() {
         if (RandomUtils.nextInt(1, 10) % 2 == 0) {
             return new FrontendTaskImpl("Task N" + counter++ + " Recolor the button");
         } else {
@@ -47,7 +47,7 @@ public class ManagerServiceImpl implements ManagerService {
         }
     }
 
-    private static Collection<Task> generateTaskList() {
+    private Collection<Task> generateTaskList() {
         List<Task> tasks = new ArrayList<>();
         for (int i = 0; i < RandomUtils.nextInt(1, 5); ++i) {
             tasks.add(generateTask());
