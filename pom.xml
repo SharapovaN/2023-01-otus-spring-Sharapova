@@ -12,12 +12,13 @@
         <module>01-student-testing-app</module>
         <module>02-library-app</module>
         <module>03-library-WebFlux</module>
+        <module>04-integration</module>
     </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.2</version>
+        <version>2.7.8</version>
     </parent>
 
     <properties>
