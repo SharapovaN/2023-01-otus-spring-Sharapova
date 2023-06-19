@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS user_role;
 
 CREATE TABLE authors
 (
-    id             BIGINT NOT NULL AUTO_INCREMENT,
+    id             BIGSERIAL,
     author_name    VARCHAR(255),
     author_surname VARCHAR(255),
     PRIMARY KEY (id)
@@ -16,14 +16,14 @@ CREATE TABLE authors
 
 CREATE TABLE genres
 (
-    id         BIGINT NOT NULL AUTO_INCREMENT,
+    id         BIGSERIAL,
     genre_name VARCHAR(255),
     PRIMARY KEY (id)
 );
 
 CREATE TABLE books
 (
-    id        BIGINT       NOT NULL AUTO_INCREMENT,
+    id        BIGSERIAL,
     book_name VARCHAR(255) NOT NULL,
     author_id BIGINT       NOT NULL REFERENCES authors (id),
     genre_id  BIGINT       NOT NULL REFERENCES genres (id),
@@ -32,7 +32,7 @@ CREATE TABLE books
 
 CREATE TABLE comments
 (
-    id      BIGINT NOT NULL AUTO_INCREMENT,
+    id      BIGSERIAL,
     book_id BIGINT NOT NULL REFERENCES books (id) ON DELETE CASCADE,
     comment VARCHAR(255),
     PRIMARY KEY (id)
@@ -40,7 +40,7 @@ CREATE TABLE comments
 
 CREATE TABLE users
 (
-    id       BIGINT       NOT NULL AUTO_INCREMENT,
+    id       BIGSERIAL,
     username VARCHAR(50)  NOT NULL,
     password VARCHAR(250) NOT NULL,
     PRIMARY KEY (id),
@@ -49,7 +49,7 @@ CREATE TABLE users
 
 CREATE TABLE roles
 (
-    id   BIGINT      NOT NULL AUTO_INCREMENT,
+    id   BIGSERIAL,
     name VARCHAR(50) NOT NULL,
     PRIMARY KEY (id)
 );
