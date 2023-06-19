@@ -14,5 +14,15 @@ spring:
     hibernate:
       ddl-auto: none
 
-
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: metrics,health,logfile
+  endpoint:
+    health:
+      show-components: always
+      show-details: always
+logging:
+  file:
+    name: 02-library-app/log/library-app.log

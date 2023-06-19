@@ -23,6 +23,7 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/").permitAll()
+                .requestMatchers("/actuator/**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
