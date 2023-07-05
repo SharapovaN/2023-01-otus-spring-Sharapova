@@ -1,4 +1,4 @@
-package ru.otus.spring.homework.model.entity;
+package ru.otus.spring.homework.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,12 +18,7 @@ public class Comment {
 
     private String comment;
 
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "id = '" + id + '\'' +
-                ", book = " + book.getBookName() +
-                ", comment = '" + comment + '\'' +
-                '}';
+    public Long getBookId() {
+        return book.getId();
     }
 }

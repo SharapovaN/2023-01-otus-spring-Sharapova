@@ -1,4 +1,4 @@
-package ru.otus.spring.homework.model.entity;
+package ru.otus.spring.homework.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,4 +18,7 @@ public class Author {
 
     private String authorSurname;
 
+    public String getAuthorName() {
+        return authorName + " " + authorSurname;
+    }
 }

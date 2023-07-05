@@ -4,11 +4,12 @@ import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
 import com.mongodb.client.MongoDatabase;
-import ru.otus.spring.homework.model.entity.Author;
-import ru.otus.spring.homework.model.entity.Book;
-import ru.otus.spring.homework.model.entity.Comment;
-import ru.otus.spring.homework.model.entity.Genre;
+import ru.otus.spring.homework.model.Author;
+import ru.otus.spring.homework.model.Book;
+import ru.otus.spring.homework.model.Comment;
+import ru.otus.spring.homework.model.Genre;
 
+@SuppressWarnings("unused")
 @ChangeLog
 public class DatabaseChangelog {
 
@@ -27,13 +28,13 @@ public class DatabaseChangelog {
     @ChangeSet(order = "002", id = "insertAuthors", author = "nsharapova")
     public void insertAuthors(MongockTemplate template) {
         pushkin = template.save(new Author(1L, "Aleksandr", "Pushkin"));
-        tolkien = template.save(new Author(2L,"John", " Tolkien"));
+        tolkien = template.save(new Author(2L, "John", " Tolkien"));
     }
 
     @ChangeSet(order = "003", id = "insertGenres", author = "nsharapova")
     public void insertGenres(MongockTemplate template) {
-        novel = template.save(new Genre(1L,"Historical Novel"));
-        fantasy = template.save(new Genre(2L,"Fantasy"));
+        novel = template.save(new Genre(1L, "Historical Novel"));
+        fantasy = template.save(new Genre(2L, "Fantasy"));
     }
 
     @ChangeSet(order = "004", id = "insertBooks", author = "nsharapova")

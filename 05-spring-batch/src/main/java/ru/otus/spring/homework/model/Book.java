@@ -1,4 +1,4 @@
-package ru.otus.spring.homework.model.entity;
+package ru.otus.spring.homework.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,16 +26,6 @@ public class Book {
 
     @DBRef
     private List<Comment> comments;
-
-    public Book(String bookName) {
-        this.bookName = bookName;
-    }
-
-    public Book(String bookName, Author author, Genre genre) {
-        this.bookName = bookName;
-        this.author = author;
-        this.genre = genre;
-    }
 
     @Override
     public String toString() {

@@ -1,4 +1,4 @@
-package ru.otus.spring.homework.model.entity;
+package ru.otus.spring.homework.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,8 +15,4 @@ public class Genre {
     private Long id;
 
     private String genreName;
-
-    public Genre(String genreName) {
-        this.genreName = genreName;
-    }
 }
