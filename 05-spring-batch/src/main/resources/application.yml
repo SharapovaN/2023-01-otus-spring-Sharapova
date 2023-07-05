@@ -2,26 +2,37 @@ spring:
   main:
     allow-circular-references: true
 
-  batch:
-    job:
+  shell:
+    interactive:
+      enabled: true
+    noninteractive:
       enabled: false
+
+    command:
+      version:
+        enabled: false
 
   data:
     mongodb:
       host: localhost
-      port: 0
+      port: 27017
       database: library
 
   datasource:
-    url: jdbc:h2:mem:library
-    driverClassName: org.h2.Driver
-    username: user
-    password:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/library
+    username: postgres
+    password: 388082
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
 
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
 de:
   flapdoodle:
     mongodb:
@@ -36,3 +47,10 @@ mongock:
     write-concern:
       journal: false
     read-concern: local
+
+logging:
+  level:
+    d: WARN
+    o: WARN
+
+

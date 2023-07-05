@@ -2,15 +2,12 @@ package ru.otus.spring.homework.mongock.changelog;
 
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
+import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
 import com.mongodb.client.MongoDatabase;
 import ru.otus.spring.homework.model.entity.Author;
 import ru.otus.spring.homework.model.entity.Book;
 import ru.otus.spring.homework.model.entity.Comment;
 import ru.otus.spring.homework.model.entity.Genre;
-import ru.otus.spring.homework.repository.AuthorRepository;
-import ru.otus.spring.homework.repository.BookRepository;
-import ru.otus.spring.homework.repository.CommentRepository;
-import ru.otus.spring.homework.repository.GenreRepository;
 
 @ChangeLog
 public class DatabaseChangelog {
@@ -19,38 +16,39 @@ public class DatabaseChangelog {
     private Book lotr;
     private Author pushkin;
     private Author tolkien;
-    private Genre novel;
     private Genre fantasy;
+    private Genre novel;
 
-    @ChangeSet(order = "001", id = "dropDb", author = "nsharapova", runAlways = true)
+    @ChangeSet(order = "001", id = "dropDb", author = "nsharapova")
     public void dropDb(MongoDatabase db) {
         db.drop();
     }
 
     @ChangeSet(order = "002", id = "insertAuthors", author = "nsharapova")
-    public void insertAuthors(AuthorRepository authorRepository) {
-        pushkin = authorRepository.save(new Author("Aleksandr", "Pushkin")).block();
-        tolkien = authorRepository.save(new Author("John", " Tolkien")).block();
+    public void insertAuthors(MongockTemplate template) {
+        pushkin = template.save(new Author(1L, "Aleksandr", "Pushkin"));
+        tolkien = template.save(new Author(2L,"John", " Tolkien"));
     }
 
     @ChangeSet(order = "003", id = "insertGenres", author = "nsharapova")
-    public void insertGenres(GenreRepository genreRepository) {
-        novel = genreRepository.save(new Genre("Historical Novel")).block();
-        fantasy = genreRepository.save(new Genre("Fantasy")).block();
+    public void insertGenres(MongockTemplate template) {
+        novel = template.save(new Genre(1L,"Historical Novel"));
+        fantasy = template.save(new Genre(2L,"Fantasy"));
     }
 
     @ChangeSet(order = "004", id = "insertBooks", author = "nsharapova")
-    public void insertBooks(BookRepository bookRepository) {
-        captainsDaughter = bookRepository.save(new Book("Captains daughter", pushkin, novel)).block();
-        lotr = bookRepository.save(new Book("Lord Of The Rings", tolkien, fantasy)).block();
+    public void insertBooks(MongockTemplate template) {
+        captainsDaughter = template.save(new Book(1L, "Captains daughter", pushkin,
+                novel, null));
+        lotr = template.save(new Book(2L, "Lord Of The Rings", tolkien, fantasy, null));
     }
 
     @ChangeSet(order = "005", id = "insertComments", author = "nsharapova")
-    public void insertComments(CommentRepository commentRepository) {
-        commentRepository.save(new Comment(captainsDaughter, "Good book")).subscribe();
-        commentRepository.save(new Comment(captainsDaughter, "Perfect book")).subscribe();
-        commentRepository.save(new Comment(lotr, "The best book ever")).subscribe();
-        commentRepository.save(new Comment(lotr, "Amazing")).subscribe();
+    public void insertComments(MongockTemplate template) {
+        template.save(new Comment(1L, captainsDaughter, "Good book"));
+        template.save(new Comment(2L, captainsDaughter, "Perfect book"));
+        template.save(new Comment(3L, lotr, "The best book ever"));
+        template.save(new Comment(4L, lotr, "Amazing"));
     }
 
 }
