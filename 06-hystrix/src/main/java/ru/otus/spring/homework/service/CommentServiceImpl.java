@@ -1,5 +1,6 @@
 package ru.otus.spring.homework.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.otus.spring.homework.exception.BookNotFoundException;
@@ -11,6 +12,7 @@ import ru.otus.spring.homework.utils.ModelConverter;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -19,20 +21,23 @@ public class CommentServiceImpl implements CommentService {
     private final BookService bookService;
     private final CommentRepository commentRepository;
 
+    @HystrixCommand(commandKey = "findAllComments", fallbackMethod = "getUndefinedCommentsList")
     @Override
     public List<CommentDto> getAll() {
-        return commentRepository.findAll().stream().map(ModelConverter::toCommentDto).toList();
+        return commentRepository.findAll().stream().map(ModelConverter::toCommentDto).collect(Collectors.toList());
     }
 
+    @HystrixCommand(commandKey = "findCommentById", fallbackMethod = "getUndefinedComment")
     @Override
     public CommentDto getById(long id) {
         return commentRepository.findById(id).map(ModelConverter::toCommentDto)
                 .orElseThrow(() -> new CommentNotFoundException(id));
     }
 
+    @HystrixCommand(commandKey = "findCommentsByBookId", fallbackMethod = "getUndefinedCommentsList")
     @Override
     public List<CommentDto> getByBookId(long id) {
-        return commentRepository.findByBookId(id).stream().map(ModelConverter::toCommentDto).toList();
+        return commentRepository.findByBookId(id).stream().map(ModelConverter::toCommentDto).collect(Collectors.toList());
     }
 
     @Override
@@ -62,5 +67,18 @@ public class CommentServiceImpl implements CommentService {
             return commentRepository.save(updateComment);
         }
         throw new CommentNotFoundException(comment.getId());
+    }
+
+
+    private List<CommentDto> getUndefinedCommentsList() {
+        return List.of(new CommentDto(0, 0, "N/A", "null"));
+    }
+
+    private List<CommentDto> getUndefinedCommentsList(long bookId) {
+        return List.of(new CommentDto(0, 0, "N/A", "null"));
+    }
+
+    private CommentDto getUndefinedComment(long commentId) {
+        return new CommentDto(0, 0, "N/A", "null");
     }
 }

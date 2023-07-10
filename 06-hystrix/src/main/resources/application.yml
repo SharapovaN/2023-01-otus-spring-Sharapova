@@ -25,4 +25,12 @@ management:
       show-details: always
 logging:
   file:
-    name: 02-library-app/log/library-app.log
+    name: 06-hystrix/log/library-app.log
+
+hystrix.command.findAllBooks.execution.isolation.thread.timeoutInMilliseconds: 5000
+hystrix.command.findBookById.execution.isolation.thread.timeoutInMilliseconds: 5000
+hystrix.command.findBookWithComments.execution.isolation.thread.timeoutInMilliseconds: 5000
+hystrix.command.findAllComments.execution.isolation.thread.timeoutInMilliseconds: 3000
+hystrix.command.findCommentById.execution.isolation.thread.timeoutInMilliseconds: 3000
+hystrix.command.findCommentsByBookId.execution.isolation.thread.timeoutInMilliseconds: 3000
+

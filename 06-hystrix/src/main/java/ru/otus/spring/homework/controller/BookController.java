@@ -3,10 +3,7 @@ package ru.otus.spring.homework.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.otus.spring.homework.model.dto.BookDto;
 import ru.otus.spring.homework.model.dto.SaveBookDto;
 import ru.otus.spring.homework.model.entity.Author;
@@ -15,6 +12,7 @@ import ru.otus.spring.homework.service.AuthorService;
 import ru.otus.spring.homework.service.BookService;
 import ru.otus.spring.homework.service.GenreService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -34,7 +32,8 @@ public class BookController {
 
     @GetMapping("/book/{id}")
     public String getBook(@PathVariable("id") Long id, Model model) {
-        List<BookDto> books = List.of(bookService.getBookDtoById(id));
+        List<BookDto> books = new ArrayList<>();
+        books.add(bookService.getBookDtoById(id));
         model.addAttribute("books", books);
         return "books";
     }

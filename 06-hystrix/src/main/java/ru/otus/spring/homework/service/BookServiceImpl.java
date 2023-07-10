@@ -1,5 +1,6 @@
 package ru.otus.spring.homework.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import ru.otus.spring.homework.utils.ModelConverter;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -21,11 +23,13 @@ public class BookServiceImpl implements BookService {
     private final AuthorService authorService;
     private final GenreService genreService;
 
+    @HystrixCommand(commandKey = "findAllBooks", fallbackMethod = "getUndefinedBooksList")
     @Override
     public List<BookDto> getAll() {
-        return bookRepository.findAll().stream().map(ModelConverter::toBookDto).toList();
+        return bookRepository.findAll().stream().map(ModelConverter::toBookDto).collect(Collectors.toList());
     }
 
+    @HystrixCommand(commandKey = "findBookById", fallbackMethod = "getUndefinedBook")
     @Override
     public BookDto getBookDtoById(long id) {
         return bookRepository.findById(id).map(ModelConverter::toBookDto)
@@ -43,6 +47,7 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new BookNotFoundException(id));
     }
 
+    @HystrixCommand(commandKey = "findBookWithComments", fallbackMethod = "getUndefinedBookWithComments")
     @Override
     @Transactional(readOnly = true)
     public BookDto getBookWithComments(long id) {
@@ -86,4 +91,16 @@ public class BookServiceImpl implements BookService {
         return bookRepository.existsById(id);
     }
 
+
+    private List<BookDto> getUndefinedBooksList() {
+        return List.of(new BookDto(0, "N/A", "N/A", "N/A", null));
+    }
+
+    private BookDto getUndefinedBook(long bookId) {
+        return new BookDto(bookId, "N/A", "N/A", "N/A", null);
+    }
+
+    private BookDto getUndefinedBookWithComments(long bookId) {
+        return new BookDto(bookId, "N/A", "N/A", "N/A", List.of("null"));
+    }
 }
