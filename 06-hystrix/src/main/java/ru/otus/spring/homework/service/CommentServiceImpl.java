@@ -69,7 +69,6 @@ public class CommentServiceImpl implements CommentService {
         throw new CommentNotFoundException(comment.getId());
     }
 
-
     private List<CommentDto> getUndefinedCommentsList() {
         return List.of(new CommentDto(0, 0, "N/A", "null"));
     }

@@ -3,11 +3,13 @@ package ru.otus.spring.homework.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.spring.homework.model.dto.CommentDto;
 import ru.otus.spring.homework.service.CommentService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -25,8 +27,7 @@ public class CommentController {
 
     @GetMapping("/comment/{id}")
     public String getComment(@PathVariable("id") long id, Model model) {
-        List<CommentDto> comments = new ArrayList<>();
-        comments.add(commentService.getById(id));
+        List<CommentDto> comments = List.of(commentService.getById(id));
         model.addAttribute("comments", comments);
         return "comments";
     }
