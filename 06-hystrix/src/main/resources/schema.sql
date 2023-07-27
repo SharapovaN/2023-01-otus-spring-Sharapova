@@ -2,9 +2,6 @@ DROP TABLE IF EXISTS authors CASCADE;
 DROP TABLE IF EXISTS books CASCADE;
 DROP TABLE IF EXISTS genres CASCADE;
 DROP TABLE IF EXISTS comments CASCADE;
-DROP TABLE IF EXISTS users CASCADE;
-DROP TABLE IF EXISTS roles CASCADE;
-DROP TABLE IF EXISTS user_role CASCADE;
 
 CREATE TABLE authors
 (
@@ -36,32 +33,4 @@ CREATE TABLE comments
     book_id BIGINT NOT NULL REFERENCES books (id) ON DELETE CASCADE,
     comment VARCHAR(255),
     PRIMARY KEY (id)
-);
-
-CREATE TABLE users
-(
-    id       BIGSERIAL,
-    username VARCHAR(50)  NOT NULL,
-    password VARCHAR(250) NOT NULL,
-    PRIMARY KEY (id),
-    constraint uq1 unique (username)
-);
-
-CREATE TABLE roles
-(
-    id   BIGSERIAL,
-    name VARCHAR(50) NOT NULL,
-    PRIMARY KEY (id)
-);
-
-CREATE TABLE users_roles
-(
-    users_id BIGINT NOT NULL,
-    roles_id BIGINT NOT NULL,
-    CONSTRAINT users_id
-        FOREIGN KEY (users_id)
-            REFERENCES users (id),
-    CONSTRAINT roles_id
-        FOREIGN KEY (roles_id)
-            REFERENCES roles (id)
 );

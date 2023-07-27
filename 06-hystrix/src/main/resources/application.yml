@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/library
+    username: postgres
+    password: 388082
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:data.sql
+      schema-locations: classpath:schema.sql
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: metrics,health,logfile
+  endpoint:
+    health:
+      show-components: always
+      show-details: always
+logging:
+  file:
+    name: 06-hystrix/log/library-app.log
+
+hystrix.command.findAllBooks.execution.isolation.thread.timeoutInMilliseconds: 5000
+hystrix.command.findBookById.execution.isolation.thread.timeoutInMilliseconds: 5000
+hystrix.command.findBookWithComments.execution.isolation.thread.timeoutInMilliseconds: 5000
+hystrix.command.findAllComments.execution.isolation.thread.timeoutInMilliseconds: 3000
+hystrix.command.findCommentById.execution.isolation.thread.timeoutInMilliseconds: 3000
+hystrix.command.findCommentsByBookId.execution.isolation.thread.timeoutInMilliseconds: 3000
+
