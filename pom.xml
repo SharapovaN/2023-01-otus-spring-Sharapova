@@ -15,6 +15,7 @@
         <module>04-integration</module>
         <module>05-spring-batch</module>
         <module>06-hystrix</module>
+        <module>07-hr-service</module>
     </modules>
 
     <parent>
